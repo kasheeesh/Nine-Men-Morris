@@ -1,0 +1,46 @@
+.game-board {
+    position: relative;
+    width: 700px;
+    height: 700px;
+    background-color: #f8f8f8;
+    margin: auto;
+    border: 2px solid #000;
+}
+
+.square {
+    position: absolute;
+    border: 2px solid #000;
+}
+
+.outer {
+    top: 5%;
+    left: 5%;
+    width: 90%;
+    height: 90%;
+}
+
+.middle {
+    top: 20%;
+    left: 20%;
+    width: 60%;
+    height: 60%;
+}
+
+.inner {
+    top: 35%;
+    left: 35%;
+    width: 30%;
+    height: 30%;
+}
+
+.point {
+    z-index: 1;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border: 2px solid black;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    
+}
