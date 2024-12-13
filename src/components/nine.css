@@ -59,3 +59,21 @@
 .point.mill {
     border: 3px solid gold;
 }
+.point.selected {
+    border: 2px solid yellow;
+}
+
+.mill {
+    background-color: green !important;
+}
+button {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #f4f4f4;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #ddd;
+}

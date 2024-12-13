@@ -1,6 +1,8 @@
-
-
+// NineMensMorris.js
 import React, { useState } from "react";
+import GameBoard from "./GameBoard";
+import GameInfo from "./GameInfo";
+import { checkForMills, handlePiecePlacement, handlePieceMovement, isValidMove } from "./GameLogic";
 import "./nine.css";
 
 const adjacencyMap = {
@@ -32,9 +34,31 @@ const adjacencyMap = {
   I7: ["I6", "I8"],
   I8: ["I7", "I1"],
 };
+const millCombinations = [
+    ["O1", "O2", "O3"],
+    ["O3", "O4", "O5"],
+    ["O5", "O6", "O7"],
+    ["O7", "O8", "O1"],
+    // Middle square mills
+    ["M1", "M2", "M3"],
+    ["M3", "M4", "M5"],
+    ["M5", "M6", "M7"],
+    ["M7", "M8", "M1"],
+    // Inner square mills
+    ["I1", "I2", "I3"],
+    ["I3", "I4", "I5"],
+    ["I5", "I6", "I7"],
+    ["I7", "I8", "I1"],
+    // Connections across squares
+    ["O2", "M2", "I2"],
+    ["O4", "M4", "I4"],
+    ["O6", "M6", "I6"],
+    ["O8", "M8", "I8"],
+  ];
+
 
 const NineMensMorris = () => {
-  const outerSquarePoints = [
+   const outerSquarePoints = [
     { id: "O1", x: 5, y: 5 },
     { id: "O2", x: 50, y: 5 },
     { id: "O3", x: 95, y: 5 },
@@ -69,28 +93,6 @@ const NineMensMorris = () => {
 
   const allPoints = [...outerSquarePoints, ...middleSquarePoints, ...innerSquarePoints];
 
-  const millCombinations = [
-    ["O1", "O2", "O3"],
-    ["O3", "O4", "O5"],
-    ["O5", "O6", "O7"],
-    ["O7", "O8", "O1"],
-    // Middle square mills
-    ["M1", "M2", "M3"],
-    ["M3", "M4", "M5"],
-    ["M5", "M6", "M7"],
-    ["M7", "M8", "M1"],
-    // Inner square mills
-    ["I1", "I2", "I3"],
-    ["I3", "I4", "I5"],
-    ["I5", "I6", "I7"],
-    ["I7", "I8", "I1"],
-    // Connections across squares
-    ["O2", "M2", "I2"],
-    ["O4", "M4", "I4"],
-    ["O6", "M6", "I6"],
-    ["O8", "M8", "I8"],
-  ];
-
   const [board, setBoard] = useState(
     allPoints.reduce((acc, point) => ({ ...acc, [point.id]: null }), {})
   );
@@ -105,30 +107,16 @@ const NineMensMorris = () => {
   const [isMovingPhase, setIsMovingPhase] = useState(false);
   const [selectedPiece, setSelectedPiece] = useState(null);
 
-  const checkForMills = (updatedBoard) => {
-    const newMills = millCombinations.filter((mill) =>
-      mill.every((point) => updatedBoard[point] === currentPlayer) &&
-      !processedMills.includes(mill.join("-"))
-    );
-    return newMills;
-  };
-
   const handlePointClick = (pointId) => {
     if (canRemove) return;
 
     if (!isMovingPhase) {
       // Placement phase
       if (remainingPieces[currentPlayer] > 0 && !board[pointId]) {
-        const updatedBoard = { ...board, [pointId]: currentPlayer };
-        setBoard(updatedBoard);
-
-        setRemainingPieces((prev) => ({
-          ...prev,
-          [currentPlayer]: prev[currentPlayer] - 1,
-        }));
+        const updatedBoard = handlePiecePlacement(board, pointId, currentPlayer, remainingPieces, setBoard, setRemainingPieces);
 
         // Check for mills
-        const newMills = checkForMills(updatedBoard);
+        const newMills = checkForMills(updatedBoard, currentPlayer, millCombinations, processedMills);
         if (newMills.length > 0) {
           setMills((prev) => [...prev, ...newMills]);
           setProcessedMills((prev) => [
@@ -155,11 +143,8 @@ const NineMensMorris = () => {
         }
       } else {
         // Attempt to move the selected piece
-        if (adjacencyMap[selectedPiece].includes(pointId) && !board[pointId]) {
-          const updatedBoard = { ...board, [selectedPiece]: null, [pointId]: currentPlayer };
-          setBoard(updatedBoard);
-          setSelectedPiece(null);
-          setCurrentPlayer((prev) => (prev === "player1" ? "player2" : "player1"));
+        if (isValidMove(selectedPiece, pointId, adjacencyMap, board)) {
+          handlePieceMovement(board, selectedPiece, pointId, currentPlayer, setBoard, setSelectedPiece, setCurrentPlayer);
         } else {
           alert("Invalid move. You can only move to an adjacent empty point.");
         }
@@ -197,42 +182,23 @@ const NineMensMorris = () => {
   };
 
   return (
-    <div className="game-board">
-      {allPoints.map((point) => (
-        <div
-          key={point.id}
-          className={`point ${
-            board[point.id] === "player1" ? "red" : board[point.id] === "player2" ? "blue" : ""
-          } ${mills.flat().includes(point.id) ? "mill" : ""}`}
-          style={{ left: `${point.x}%`, top: `${point.y}%` }}
-          onClick={() => (canRemove ? handleRemoveChecker(point.id) : handlePointClick(point.id))}
-        ></div>
-      ))}
-      <svg className="connections" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
-        <line x1="200" y1="20" x2="200" y2="140" stroke="black" strokeWidth="1" />
-        <line x1="200" y1="260" x2="200" y2="380" stroke="black" strokeWidth="1" />
-        <line x1="20" y1="200" x2="140" y2="200" stroke="black" strokeWidth="1" />
-        <line x1="260" y1="200" x2="380" y2="200" stroke="black" strokeWidth="1" />
-      </svg>
-      <div className="square outer"></div>
-      <div className="square middle"></div>
-      <div className="square inner"></div>
-      <div className="info">
-        <p>Current Turn: {currentPlayer}</p>
-        <p>
-          Remaining Pieces - Player 1: {remainingPieces.player1}, Player 2:{" "}
-          {remainingPieces.player2}
-        </p>
-        {isMovingPhase && <p>Moving Phase Active!</p>}
-        {canRemove && <p>Remove an opponent's piece from the board.</p>}
-      </div>
+    <div className="game">
+      <GameBoard
+        allPoints={allPoints}
+        board={board}
+        mills={mills}
+        canRemove={canRemove}
+        handlePointClick={handlePointClick}
+        handleRemoveChecker={handleRemoveChecker}
+      />
+      <GameInfo
+        currentPlayer={currentPlayer}
+        remainingPieces={remainingPieces}
+        isMovingPhase={isMovingPhase}
+        canRemove={canRemove}
+      />
     </div>
   );
 };
 
 export default NineMensMorris;
-
-
-
-
-

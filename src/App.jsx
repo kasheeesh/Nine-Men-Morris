@@ -1,6 +1,6 @@
 
 import './App.css'
-import NineMensMorris from './components/board'
+import NineMensMorris from './components/NineMenMorris'
 
 function App() {
 
