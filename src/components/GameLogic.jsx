@@ -25,6 +25,7 @@ export const handlePiecePlacement = (board, pointId, currentPlayer, remainingPie
 export const handlePieceMovement = (board, selectedPiece, pointId, currentPlayer, setBoard, setSelectedPiece, setCurrentPlayer) => {
   const updatedBoard = { ...board, [selectedPiece]: null, [pointId]: currentPlayer };
   setBoard(updatedBoard);
+  
   setSelectedPiece(null);
   setCurrentPlayer((prev) => (prev === "player1" ? "player2" : "player1"));
 };
