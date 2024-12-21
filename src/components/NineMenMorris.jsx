@@ -4,6 +4,7 @@ import GameBoard from "./GameBoard";
 import GameInfo from "./GameInfo";
 import { checkForMills, handlePiecePlacement, handlePieceMovement, isValidMove } from "./GameLogic";
 import "./nine.css";
+import '../App.css';
 
 const adjacencyMap = {
   // Outer square adjacency
@@ -26,13 +27,13 @@ const adjacencyMap = {
   M8: ["M7", "M1", "I8"],
   // Inner square adjacency
   I1: ["I2", "I8"],
-  I2: ["I1", "I3"],
+  I2: ["I1", "I3","M2"],
   I3: ["I2", "I4"],
-  I4: ["I3", "I5"],
+  I4: ["I3", "I5","M4"],
   I5: ["I4", "I6"],
-  I6: ["I5", "I7"],
+  I6: ["I5", "I7","M6"],
   I7: ["I6", "I8"],
-  I8: ["I7", "I1"],
+  I8: ["I7", "I1","M8"],
 };
 const millCombinations = [
     ["O1", "O2", "O3"],
@@ -145,12 +146,15 @@ const NineMensMorris = () => {
         // Attempt to move the selected piece
         if (isValidMove(selectedPiece, pointId, adjacencyMap, board)) {
           handlePieceMovement(board, selectedPiece, pointId, currentPlayer, setBoard, setSelectedPiece, setCurrentPlayer);
+        
         } else {
           alert("Invalid move. You can only move to an adjacent empty point.");
         }
       }
     }
   };
+
+  
 
   const handleRemoveChecker = (pointId) => {
     if (!canRemove || !board[pointId]) return;
