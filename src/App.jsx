@@ -8,9 +8,9 @@ function App() {
 
   return (
     <>
-      {/* <NineMensMorris/> */}
+      <NineMensMorris/>
       {/* <Lexi/> */}
-       <Game />
+       {/* <Game /> */}
     </>
   )
 }
