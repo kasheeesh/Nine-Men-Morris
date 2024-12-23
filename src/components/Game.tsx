@@ -6,6 +6,7 @@ import { PowerUpItem } from './PowerUpItem';
 import { WaveAnnouncement } from './WaveAnnouncement';
 import { useGameLoop } from '../hooks/useGameLoop';
 import { useSound } from '../hooks/useSound';
+import { useWaveSystem } from '../hooks/useWaveSystem';
 import { GAME_CONFIG } from '../constants/gameConfig';
 import { updateMeteorites, updatePowerups, createMeteorite, createPowerup, checkGameCollisions } from '../utils/gameLogic';
 import { createBullets, updateBullets } from '../utils/bulletUtils';
@@ -27,8 +28,6 @@ const INITIAL_SHIP: SpaceshipType = {
 export const Game: React.FC = () => {
   const [ship, setShip] = useState<SpaceshipType>(INITIAL_SHIP);
   const [score, setScore] = useState(0);
-  const [wave, setWave] = useState(1);
-  const [showWaveAnnouncement, setShowWaveAnnouncement] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [bullets, setBullets] = useState<Bullet[]>([]);
   const [meteorites, setMeteorites] = useState<MeteoriteType[]>([]);
@@ -39,153 +38,169 @@ export const Game: React.FC = () => {
   const lastPowerupRef = useRef<number>(0);
   const { play } = useSound();
 
-  const spawnEntities = useCallback(() => {
+  const handleWaveChange = useCallback((newWave: number) => {
+    play('powerup');
+  }, [play]);
+
+  const { wave, showAnnouncement } = useWaveSystem({
+    score,
+    onWaveChange: handleWaveChange
+  });
+
+  // Reset ship position and health when losing a life
+  const resetShipState = useCallback(() => {
+    setShip(prev => ({
+      ...INITIAL_SHIP,
+      lives: prev.lives
+    }));
+  }, []);
+
+  // Handle ship movement
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setShip(prev => ({
+        ...prev,
+        x: Math.max(0, Math.min(e.clientX - prev.width / 2, window.innerWidth - prev.width))
+      }));
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  // Handle shooting
+  useEffect(() => {
+    const handleClick = () => {
+      const now = Date.now();
+      if (now - lastShotRef.current >= GAME_CONFIG.ship.shootCooldown) {
+        const newBullets = createBullets(ship, ship.powerups.multishot);
+        setBullets(prev => [...prev, ...newBullets]);
+        play('shoot');
+        lastShotRef.current = now;
+      }
+    };
+
+    window.addEventListener('click', handleClick);
+    return () => window.removeEventListener('click', handleClick);
+  }, [ship, play]);
+
+  // Check health and lives
+  useEffect(() => {
+    if (ship.health <= 0 && !gameOver) {
+      play('damage');
+      const newLives = ship.lives - 1;
+      
+      if (newLives <= 0) {
+        setGameOver(true);
+        play('gameOver');
+      } else {
+        setShip(prev => ({
+          ...prev,
+          lives: newLives
+        }));
+        resetShipState();
+      }
+    }
+  }, [ship.health, ship.lives, gameOver, play, resetShipState]);
+
+  // Game loop
+  useGameLoop(useCallback(() => {
+    if (gameOver) return;
+
+    // Update bullets
+    setBullets(prev => updateBullets(prev));
+
+    // Update meteorites
+    setMeteorites(prev => updateMeteorites(prev));
+
+    // Update powerups
+    setPowerups(prev => updatePowerups(prev));
+
     const now = Date.now();
 
-    // Spawn meteorites
-    if (now - lastMeteoriteRef.current > GAME_CONFIG.meteorite.spawnInterval) {
+    // Create new meteorites
+    if (now - lastMeteoriteRef.current >= GAME_CONFIG.meteorite.spawnInterval) {
       setMeteorites(prev => [...prev, createMeteorite(wave)]);
       lastMeteoriteRef.current = now;
     }
 
-    // Spawn powerups
-    if (now - lastPowerupRef.current > GAME_CONFIG.powerup.spawnInterval) {
+    // Create new powerups
+    if (now - lastPowerupRef.current >= GAME_CONFIG.powerup.spawnInterval) {
       setPowerups(prev => [...prev, createPowerup()]);
       lastPowerupRef.current = now;
     }
-  }, [wave]);
 
-  const handleHit = useCallback(() => {
-    play('damage');
-    if (!ship.powerups.shield) {
-      setShip(prev => {
-        const newHealth = prev.health - 20;
-        if (newHealth <= 0) {
-          const newLives = prev.lives - 1;
-          if (newLives <= 0) {
-            play('gameOver');
-            setGameOver(true);
-            return prev;
-          }
-          return { ...INITIAL_SHIP, lives: newLives };
+    // Check collisions
+    checkGameCollisions(
+      ship,
+      bullets,
+      meteorites,
+      powerups,
+      () => {
+        if (!ship.powerups.shield) {
+          play('damage');
+          setShip(prev => ({
+            ...prev,
+            health: prev.health - 20 // Increased damage for more challenge
+          }));
         }
-        return { ...prev, health: newHealth };
-      });
-    }
-  }, [ship.powerups.shield, play]);
-
-  const handleScore = useCallback(() => {
-    play('explosion');
-    setScore(prev => prev + 100);
-  }, [play]);
-
-  const handlePowerup = useCallback((type: PowerUp['type']) => {
-    play('powerup');
-    setShip(prev => ({
-      ...prev,
-      powerups: {
-        ...prev.powerups,
-        [type === 'shield' ? 'shield' : 'multishot']: true
-      }
-    }));
-
-    // Remove powerup after duration
-    setTimeout(() => {
-      setShip(prev => ({
-        ...prev,
-        powerups: {
-          ...prev.powerups,
-          [type === 'shield' ? 'shield' : 'multishot']: false
-        }
-      }));
-    }, GAME_CONFIG.powerup.duration);
-  }, [play]);
-
-  const shoot = useCallback(() => {
-    play('shoot');
-    const newBullets = createBullets(ship, ship.powerups.multishot);
-    setBullets(prev => [...prev, ...newBullets]);
-  }, [ship, play]);
-
-  // Game loop implementation
-  const gameLoop = useCallback(() => {
-    if (gameOver) return;
-    
-    setBullets(prev => updateBullets(prev));
-    setMeteorites(prev => updateMeteorites(prev));
-    setPowerups(prev => updatePowerups(prev));
-    checkGameCollisions(ship, bullets, meteorites, powerups, handleHit, handleScore, handlePowerup);
-    spawnEntities();
-  }, [gameOver, ship, bullets, meteorites, powerups, handleHit, handleScore, handlePowerup, spawnEntities]);
-
-  useGameLoop(gameLoop);
-
-  // Input handlers
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!gameOver) {
+      },
+      () => {
+        play('explosion');
+        setScore(prev => prev + 100);
+      },
+      (type) => {
+        play('powerup');
         setShip(prev => ({
           ...prev,
-          x: Math.max(0, Math.min(e.clientX - GAME_CONFIG.ship.width / 2, window.innerWidth - GAME_CONFIG.ship.width))
+          powerups: {
+            ...prev.powerups,
+            [type === 'shield' ? 'shield' : 'multishot']: true
+          }
         }));
+        setTimeout(() => {
+          setShip(prev => ({
+            ...prev,
+            powerups: {
+              ...prev.powerups,
+              [type === 'shield' ? 'shield' : 'multishot']: false
+            }
+          }));
+        }, GAME_CONFIG.powerup.duration);
       }
-    };
-
-    const handleClick = () => {
-      if (!gameOver && Date.now() - lastShotRef.current > GAME_CONFIG.ship.shootCooldown) {
-        shoot();
-        lastShotRef.current = Date.now();
-      }
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('click', handleClick);
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('click', handleClick);
-    };
-  }, [gameOver, shoot]);
+    );
+  }, [ship, bullets, meteorites, powerups, gameOver, wave, play]));
 
   return (
     <div className="w-full h-screen bg-black overflow-hidden relative">
       <GameHUD score={score} lives={ship.lives} wave={wave} />
-      <WaveAnnouncement wave={wave} visible={showWaveAnnouncement} />
+      <WaveAnnouncement wave={wave} visible={showAnnouncement} />
       <Spaceship ship={ship} />
-      
-      {bullets.map((bullet, index) => (
-        <div
-          key={index}
-          className="absolute bg-yellow-400"
-          style={{
-            left: bullet.x,
-            top: bullet.y,
-            width: bullet.width,
-            height: bullet.height
-          }}
-        />
-      ))}
-
       {meteorites.map((meteorite, index) => (
-        <Meteorite key={index} meteorite={meteorite} />
+        meteorite.active && <Meteorite key={index} meteorite={meteorite} />
       ))}
-
+      {bullets.map((bullet, index) => (
+        bullet.active && (
+          <div
+            key={index}
+            className="absolute bg-yellow-400 rounded-full"
+            style={{
+              left: bullet.x,
+              top: bullet.y,
+              width: bullet.width,
+              height: bullet.height
+            }}
+          />
+        )
+      ))}
       {powerups.map((powerup, index) => (
-        <PowerUpItem key={index} powerup={powerup} />
+        powerup.active && <PowerUpItem key={index} powerup={powerup} />
       ))}
-
       {gameOver && (
-        <div className="absolute inset-0 bg-black/80 flex items-center justify-center">
-          <div className="text-center text-white">
+        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-75">
+          <div className="text-white text-center">
             <h2 className="text-4xl font-bold mb-4">Game Over</h2>
-            <p className="text-xl mb-2">Wave: {wave}</p>
-            <p className="text-xl mb-8">Final Score: {score}</p>
-            <button
-              className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-              onClick={() => window.location.reload()}
-            >
-              Play Again
-            </button>
+            <p className="text-2xl">Final Score: {score}</p>
           </div>
         </div>
       )}
