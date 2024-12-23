@@ -108,75 +108,11 @@ const NineMensMorris = () => {
   const [isMovingPhase, setIsMovingPhase] = useState(false);
   const [selectedPiece, setSelectedPiece] = useState(null);
 
-  // const handlePointClick = (pointId) => {
-  //   if (canRemove) return;
-
-  //   if (!isMovingPhase) {
-  //     // Placement phase
-  //     if (remainingPieces[currentPlayer] > 0 && !board[pointId]) {
-  //       const updatedBoard = handlePiecePlacement(board, pointId, currentPlayer, remainingPieces, setBoard, setRemainingPieces);
-
-  //       // Check for mills
-  //       const newMills = checkForMills(updatedBoard, currentPlayer, millCombinations, processedMills);
-  //       if (newMills.length > 0) {
-  //         setMills((prev) => [...prev, ...newMills]);
-  //         setProcessedMills((prev) => [
-  //           ...prev,
-  //           ...newMills.map((mill) => mill.join("-")),
-  //         ]);
-  //         setCanRemove(true);
-  //         if (remainingPieces.player1 === 0 || remainingPieces.player2 === 0) {
-  //         setIsMovingPhase(true);
-  //         }
-  //         return;
-  //       }
-  //       if (remainingPieces.player1 === 0 || remainingPieces.player2 === 0) {
-  //         setIsMovingPhase(true);
-  //       }
-
-  //       // Switch turn
-  //       setCurrentPlayer((prev) => (prev === "player1" ? "player2" : "player1"));
-  //     }
-  //   } else {
-      
-  //     if (selectedPiece === null) {
-  //       // Select a piece to move
-  //       if (board[pointId] === currentPlayer) {
-  //         setSelectedPiece(pointId);
-  //       } else {
-  //         alert("Select one of your pieces to move.");
-  //       }
-  //     } else {
-  //       // Attempt to move the selected piece
-  //       if (isValidMove(selectedPiece, pointId, adjacencyMap, board)) {
-  //         // handlePieceMovement(board, selectedPiece, pointId, currentPlayer, setBoard, setSelectedPiece, setCurrentPlayer);
-  //          const updatedBoard = { ...board, [selectedPiece]: null, [pointId]: currentPlayer };
-  //           setBoard(updatedBoard);
-  
-  //         const newMills = checkForMills(updatedBoard, currentPlayer, millCombinations, processedMills);
-  //       if (newMills.length > 0) {
-  //         setMills((prev) => [...prev, ...newMills]);
-  //         setProcessedMills((prev) => [
-  //           ...prev,
-  //           ...newMills.map((mill) => mill.join("-")),
-  //         ]);
-  //         setCanRemove(true);
-  //         return;
-  //         }
-  //         // setSelectedPiece(null);
-  //         setCurrentPlayer((prev) => (prev === "player1" ? "player2" : "player1"));
-        
-  //       } else {
-  //         alert("Invalid move. You can only move to an adjacent empty point.");
-  //       }
-  //     }
-  //   }
-  // };
 const handlePointClick = (pointId) => {
-    if (canRemove) return; // Skip if we're in the removal phase.
+    if (canRemove) return; 
 
     if (!isMovingPhase) {
-        // Placement phase
+       
         if (remainingPieces[currentPlayer] > 0 && !board[pointId]) {
             const updatedBoard = handlePiecePlacement(
                 board,
@@ -187,7 +123,6 @@ const handlePointClick = (pointId) => {
                 setRemainingPieces
             );
 
-            // Check for mills
             const newMills = checkForMills(
                 updatedBoard,
                 currentPlayer,
@@ -200,7 +135,7 @@ const handlePointClick = (pointId) => {
                     ...prev,
                     ...newMills.map((mill) => mill.join("-")),
                 ]);
-                setCanRemove(true); // Allow removal of opponent's piece.
+                setCanRemove(true); 
                 if (remainingPieces.player1 === 0 || remainingPieces.player2 === 0) {
                     setIsMovingPhase(true);
                 }
@@ -210,22 +145,20 @@ const handlePointClick = (pointId) => {
                 setIsMovingPhase(true);
             }
 
-            // Switch turn
             setCurrentPlayer((prev) =>
                 prev === "player1" ? "player2" : "player1"
             );
         }
     } else {
-        // Moving phase
+      
         if (selectedPiece === null) {
-            // Select a piece to move
+        
             if (board[pointId] === currentPlayer) {
                 setSelectedPiece(pointId);
             } else {
                 alert("Select one of your pieces to move.");
             }
         } else {
-            // Attempt to move the selected piece
             if (isValidMove(selectedPiece, pointId, adjacencyMap, board)) {
                 const updatedBoard = {
                     ...board,
@@ -233,8 +166,6 @@ const handlePointClick = (pointId) => {
                     [pointId]: currentPlayer,
                 };
                 setBoard(updatedBoard);
-
-                // Check for mills after movement
                 const newMills = checkForMills(
                     updatedBoard,
                     currentPlayer,
@@ -247,15 +178,11 @@ const handlePointClick = (pointId) => {
                         ...prev,
                         ...newMills.map((mill) => mill.join("-")),
                     ]);
-                    setCanRemove(true); // Allow removal of opponent's piece.
-
-                    // Reset the selected piece for clarity.
+                    setCanRemove(true); 
                     setSelectedPiece(null);
 
-                    return; // Exit to wait for removal phase to complete.
+                    return; 
                 }
-
-                // Reset the selected piece and switch turn
                 setSelectedPiece(null);
                 setCurrentPlayer((prev) =>
                     prev === "player1" ? "player2" : "player1"
