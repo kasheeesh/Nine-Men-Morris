@@ -1,14 +1,15 @@
 
 import NineMensMorris from './components/NineMenMorris'
-import SpaceShooter from './components/LexiQuest'
+import Lexi from './components/LexiQuest'
 import { Game } from './components/Game';
+import "./App.css";
 
 function App() {
 
   return (
     <>
       {/* <NineMensMorris/> */}
-      {/* <SpaceShooter/> */}
+      {/* <Lexi/> */}
        <Game />
     </>
   )
