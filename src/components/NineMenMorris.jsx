@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import GameBoard from "./GameBoard";
 import GameInfo from "./GameInfo";
-import { checkForMills, handlePiecePlacement, handlePieceMovement, isValidMove } from "./GameLogic";
+import { checkForMills, handlePiecePlacement, isValidMove } from "./GameLogic";
 import "./nine.css";
 import '../App.css';
 
