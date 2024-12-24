@@ -9,7 +9,7 @@ const GameRedirector = () => {
 
   return (
     <div style={styles.container}>
-      <h1 style={styles.heading}>Welcome to the Game Hub</h1>
+      <h1 style={styles.heading}>Welcome to the Infinity Arcade</h1>
       <p style={styles.description}>Choose a game to play and have fun!</p>
       <div style={styles.buttonContainer}>
         {games.map((game, index) => (
