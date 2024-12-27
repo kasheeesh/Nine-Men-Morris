@@ -8,8 +8,12 @@ body{
     margin-bottom: 20px;
     margin-top:30px;
 }
-button{
+.submitbutt{
     color:black;
+    margin-left: 700px;
+}
+.app:focus {
+    outline: none;
 }
 
 
@@ -29,6 +33,8 @@ button{
     font-size: 18px;
     font-weight: bold;
     text-transform: uppercase;
+    color:#ccc;
+    
 }
 
 .cell.active {
@@ -111,7 +117,7 @@ button{
         /* Slight shadow for better focus */
         text-align: center;
         margin-left: auto;
-        margin-right: 97px;
+        margin-right: 597px;
 
 }
 /* Modal overlay (background) */
