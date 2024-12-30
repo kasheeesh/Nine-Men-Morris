@@ -34,3 +34,31 @@
     border: 3px white solid;
     padding: 7px;
 }
+.mute-button {
+    position: absolute;
+    /* Allows positioning relative to the nearest positioned ancestor */
+    top: 1.5rem;
+    /* Distance from the top */
+    right: 2rem;
+    /* Distance from the right */
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #fff;
+    background: #333;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    z-index: 10;
+    /* Ensures it stays above the video and other elements */
+}
+
+.mute-button:hover {
+    background-color: #555;
+}
+.mute-icon {
+    width: 30px;
+    /* Adjust the size */
+    height: 30px;
+}

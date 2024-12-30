@@ -1,4 +1,5 @@
 import React from 'react';
+import gamespg from "../assets/gamespg.mp4";
 
 const GameRedirector = () => {
   const games = [
@@ -9,18 +10,32 @@ const GameRedirector = () => {
 
   return (
     <div style={styles.container}>
-      <h1 style={styles.heading}>Welcome to the Infinity Arcade</h1>
-      <p style={styles.description}>Choose a game to play and have fun!</p>
-      <div style={styles.buttonContainer}>
-        {games.map((game, index) => (
-          <button
-            key={index}
-            style={styles.button}
-            onClick={() => window.location.href = game.link}
-          >
-            {game.name}
-          </button>
-        ))}
+      {/* Background video */}
+      <video
+        autoPlay
+        loop
+        muted
+        style={styles.video}
+      >
+        <source src={gamespg} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+
+      {/* Content overlay */}
+      <div style={styles.overlay}>
+        <h1 style={styles.heading}>Welcome to the Infinity Arcade</h1>
+        <p style={styles.description}>Choose a game to play and have fun!</p>
+        <div style={styles.buttonContainer}>
+          {games.map((game, index) => (
+            <button
+              key={index}
+              style={styles.button}
+              onClick={() => (window.location.href = game.link)}
+            >
+              {game.name}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -28,14 +43,30 @@ const GameRedirector = () => {
 
 const styles = {
   container: {
+    position: 'relative',
+    width: '100%',
+    height: '100vh',
+    overflow: 'hidden',
+  },
+  video: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    zIndex: -1, // Ensure video is behind the content
+  },
+  overlay: {
+    position: 'relative',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    height: '100vh',
-    backgroundColor: '#282c34',
+    height: '100%',
     color: 'white',
-    fontFamily: 'Arial, sans-serif',
+    textAlign: 'center',
+    zIndex: 1,
   },
   heading: {
     fontSize: '3rem',
@@ -44,7 +75,6 @@ const styles = {
   description: {
     fontSize: '1.5rem',
     marginBottom: '2rem',
-    textAlign: 'center',
   },
   buttonContainer: {
     display: 'flex',
@@ -61,9 +91,6 @@ const styles = {
     color: '#282c34',
     cursor: 'pointer',
     transition: 'transform 0.2s, background-color 0.2s',
-  },
-  buttonHover: {
-    backgroundColor: '#21a1f1',
   },
 };
 
