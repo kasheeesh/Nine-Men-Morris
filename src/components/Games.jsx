@@ -2,9 +2,9 @@ import React from 'react';
 
 const GameRedirector = () => {
   const games = [
-    { name: 'Nine Men Morris', link: '/ninemenmorris' },
-    { name: 'Space Shooter', link: '/spaceshooter' },
-    { name: 'LexiQuest', link: '/lexiquest' },
+    { name: 'Nine Men Morris', link: '/games/ninemenmorris' },
+    { name: 'Space Shooter', link: '/games/spaceshooter' },
+    { name: 'LexiQuest', link: '/games/lexiquest' },
   ];
 
   return (
