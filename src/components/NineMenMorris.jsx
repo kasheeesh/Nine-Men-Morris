@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import GameBoard from "./GameBoard";
 import GameInfo from "./GameInfo";
-import { checkForMills, handlePiecePlacement, isValidMove } from "./GameLogic";
+import { checkForMills, handlePiecePlacement, isValidMove, isValidFlying} from "./GameLogic";
 import "./nine.css";
 import '../App.css';
 
@@ -102,12 +102,76 @@ const NineMensMorris = () => {
   });
   const [isMovingPhase, setIsMovingPhase] = useState(false);
   const [selectedPiece, setSelectedPiece] = useState(null);
-
+  const [isFlyingPhase, setIsFlyingPhase] = useState(false);  
+  const checkFlyingPhase = (board, player) => {
+  const playerPiecesCount = Object.values(board).filter((value) => value === player).length;
+  return playerPiecesCount === 3;
+};
+const isLoser = (board, player) => {
+  const playerPiecesCount = Object.values(board).filter((value) => value === player).length;
+  return playerPiecesCount === 2;
+}
 
 const handlePointClick = (pointId) => {
     if (canRemove) return;
+    if(isLoser(board, currentPlayer) && isFlyingPhase){
+      let winner = "none";
+      if(currentPlayer == "player1"){
+        winner = "player2"
+      }else{
+        winner="player1"
+      }
+      console.log("Winner is:", winner);
+      return;
+    }
+    if(checkFlyingPhase(board, currentPlayer) && isMovingPhase){
+      setIsFlyingPhase(true);
+      if(selectedPiece === null){
+        if(board[pointId] === currentPlayer){
+          setSelectedPiece(pointId);
+        }else{
+          alert("Select one of your pieces to move");
+        }
+      }else{
+        const millsToRemove = processedMills.filter((mill) => 
+          mill.split("-").includes(selectedPiece));
+        setProcessedMills((prev) => prev.filter((mill) => !millsToRemove.includes(mill)));
+        if(isValidFlying(pointId, board)){
 
-    if (!isMovingPhase) {
+          const updatedBoard = {
+                    ...board,
+                    [selectedPiece]: null,
+                    [pointId]: currentPlayer,
+                };
+                setBoard(updatedBoard);
+                const newMills = checkForMills(
+                    updatedBoard,
+                    currentPlayer,
+                    millCombinations,
+                    processedMills
+                );
+                if (newMills.length > 0) {
+                    setMills((prev) => [...prev, ...newMills]);
+                    setProcessedMills((prev) => [
+                        ...prev,
+                        ...newMills.map((mill) => mill.join("-")),
+                    ]);
+                    setCanRemove(true);
+                    setSelectedPiece(null);
+                    return;
+                }
+                setSelectedPiece(null);
+                setCurrentPlayer((prev) =>
+                    prev === "player1" ? "player2" : "player1"
+                );
+        }
+        else{
+          alert("Invalid move. You can only move to an empty point.");
+        }
+      }
+
+    }
+    else if (!isMovingPhase) {
         if (remainingPieces[currentPlayer] > 0 && !board[pointId]) {
             const updatedBoard = handlePiecePlacement(
                 board,
@@ -144,7 +208,8 @@ const handlePointClick = (pointId) => {
                 prev === "player1" ? "player2" : "player1"
             );
         }
-    } else {
+    }
+     else if(isMovingPhase){
         if (selectedPiece === null) {
             if (board[pointId] === currentPlayer) {
                 setSelectedPiece(pointId);
@@ -192,7 +257,7 @@ const handlePointClick = (pointId) => {
         }
     }
 };
-
+ 
 
   
 
@@ -222,7 +287,6 @@ const handlePointClick = (pointId) => {
     setBoard(updatedBoard);
     setCanRemove(false);
     setCurrentPlayer((prev) => (prev === "player1" ? "player2" : "player1"));
-
     setMills([]);
   };
 
@@ -240,6 +304,7 @@ const handlePointClick = (pointId) => {
         currentPlayer={currentPlayer}
         remainingPieces={remainingPieces}
         isMovingPhase={isMovingPhase}
+        isFlyingPhase={isFlyingPhase}
         canRemove={canRemove}
       />
     </div>
@@ -247,3 +312,5 @@ const handlePointClick = (pointId) => {
 };
 
 export default NineMensMorris;
+
+
