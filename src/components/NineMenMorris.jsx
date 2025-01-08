@@ -7,7 +7,6 @@ import "./nine.css";
 import '../App.css';
 
 const adjacencyMap = {
-  // Outer square adjacency
   O1: ["O2", "O8"],
   O2: ["O1", "O3", "M2"],
   O3: ["O2", "O4"],
@@ -16,46 +15,42 @@ const adjacencyMap = {
   O6: ["O5", "O7", "M6"],
   O7: ["O6", "O8"],
   O8: ["O7", "O1", "M8"],
-  // Middle square adjacency
   M1: ["M2", "M8"],
-  M2: ["M1", "M3", "I2"],
+  M2: ["M1", "M3", "I2", "O2"],
   M3: ["M2", "M4"],
-  M4: ["M3", "M5", "I4"],
+  M4: ["M3", "M5", "I4", "O4"],
   M5: ["M4", "M6"],
-  M6: ["M5", "M7", "I6"],
+  M6: ["M5", "M7", "I6", "O6"],
   M7: ["M6", "M8"],
-  M8: ["M7", "M1", "I8"],
-  // Inner square adjacency
+  M8: ["M7", "M1", "I8", "O8"],
   I1: ["I2", "I8"],
-  I2: ["I1", "I3","M2"],
+  I2: ["I1", "I3", "M2"],
   I3: ["I2", "I4"],
-  I4: ["I3", "I5","M4"],
+  I4: ["I3", "I5", "M4"],
   I5: ["I4", "I6"],
-  I6: ["I5", "I7","M6"],
+  I6: ["I5", "I7", "M6"],
   I7: ["I6", "I8"],
-  I8: ["I7", "I1","M8"],
+  I8: ["I7", "I1", "M8"],
 };
+
 const millCombinations = [
-    ["O1", "O2", "O3"],
-    ["O3", "O4", "O5"],
-    ["O5", "O6", "O7"],
-    ["O7", "O8", "O1"],
-    // Middle square mills
-    ["M1", "M2", "M3"],
-    ["M3", "M4", "M5"],
-    ["M5", "M6", "M7"],
-    ["M7", "M8", "M1"],
-    // Inner square mills
-    ["I1", "I2", "I3"],
-    ["I3", "I4", "I5"],
-    ["I5", "I6", "I7"],
-    ["I7", "I8", "I1"],
-    // Connections across squares
-    ["O2", "M2", "I2"],
-    ["O4", "M4", "I4"],
-    ["O6", "M6", "I6"],
-    ["O8", "M8", "I8"],
-  ];
+  ["O1", "O2", "O3"],
+  ["O3", "O4", "O5"],
+  ["O5", "O6", "O7"],
+  ["O7", "O8", "O1"],
+  ["M1", "M2", "M3"],
+  ["M3", "M4", "M5"],
+  ["M5", "M6", "M7"],
+  ["M7", "M8", "M1"],
+  ["I1", "I2", "I3"],
+  ["I3", "I4", "I5"],
+  ["I5", "I6", "I7"],
+  ["I7", "I8", "I1"],
+  ["O2", "M2", "I2"],
+  ["O4", "M4", "I4"],
+  ["O6", "M6", "I6"],
+  ["O8", "M8", "I8"],
+];
 
 
 const NineMensMorris = () => {
@@ -108,11 +103,11 @@ const NineMensMorris = () => {
   const [isMovingPhase, setIsMovingPhase] = useState(false);
   const [selectedPiece, setSelectedPiece] = useState(null);
 
+
 const handlePointClick = (pointId) => {
-    if (canRemove) return; 
+    if (canRemove) return;
 
     if (!isMovingPhase) {
-       
         if (remainingPieces[currentPlayer] > 0 && !board[pointId]) {
             const updatedBoard = handlePiecePlacement(
                 board,
@@ -135,7 +130,7 @@ const handlePointClick = (pointId) => {
                     ...prev,
                     ...newMills.map((mill) => mill.join("-")),
                 ]);
-                setCanRemove(true); 
+                setCanRemove(true);
                 if (remainingPieces.player1 === 0 || remainingPieces.player2 === 0) {
                     setIsMovingPhase(true);
                 }
@@ -150,15 +145,20 @@ const handlePointClick = (pointId) => {
             );
         }
     } else {
-      
         if (selectedPiece === null) {
-        
             if (board[pointId] === currentPlayer) {
                 setSelectedPiece(pointId);
             } else {
                 alert("Select one of your pieces to move.");
             }
         } else {
+            // Remove mills that contain the selected piece before performing the move
+            const millsToRemove = processedMills.filter((mill) => 
+                mill.split("-").includes(selectedPiece)
+            );
+
+            setProcessedMills((prev) => prev.filter((mill) => !millsToRemove.includes(mill)));
+
             if (isValidMove(selectedPiece, pointId, adjacencyMap, board)) {
                 const updatedBoard = {
                     ...board,
@@ -178,10 +178,9 @@ const handlePointClick = (pointId) => {
                         ...prev,
                         ...newMills.map((mill) => mill.join("-")),
                     ]);
-                    setCanRemove(true); 
+                    setCanRemove(true);
                     setSelectedPiece(null);
-
-                    return; 
+                    return;
                 }
                 setSelectedPiece(null);
                 setCurrentPlayer((prev) =>
@@ -194,6 +193,7 @@ const handlePointClick = (pointId) => {
     }
 };
 
+
   
 
   const handleRemoveChecker = (pointId) => {
@@ -205,6 +205,7 @@ const handlePointClick = (pointId) => {
     const isPartOfMill = millCombinations.some((mill) =>
       mill.includes(pointId) && mill.every((point) => board[point] === opponent)
     );
+    
 
     const nonMillPieces = Object.entries(board).filter(
       ([id, player]) =>
