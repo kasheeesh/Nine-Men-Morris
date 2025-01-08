@@ -15,6 +15,11 @@ export const isValidMove = (selectedPiece, pointId, adjacencyMap, board) => {
   return adjacencyMap[selectedPiece].includes(pointId) && !board[pointId];
 };
 
+export const isValidFlying = (pointId, board) =>{
+  console.log("it is a valid move :", !board[pointId]);
+  return !board[pointId];
+}
+
 export const handlePiecePlacement = (board, pointId, currentPlayer, remainingPieces, setBoard, setRemainingPieces) => {
   const updatedBoard = { ...board, [pointId]: currentPlayer };
   setBoard(updatedBoard);
