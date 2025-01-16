@@ -54,6 +54,10 @@ function Login() {
         if (response.status === 200) {
           setSuccessMessage(result.message);
           setErrorMessage("");
+
+          // Save the token in localStorage
+          localStorage.setItem("token", result.token);
+          
           setFormData({
             email: "",
             password: "",
