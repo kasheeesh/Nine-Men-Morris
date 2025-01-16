@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import "./Login.css";
 
 function Login() {
@@ -10,6 +12,9 @@ function Login() {
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
+  const navigate = useNavigate();
+
 
   const validateForm = () => {
     const newErrors = {};
@@ -53,6 +58,7 @@ function Login() {
             email: "",
             password: "",
           });
+          navigate("/games");
         } else {
           setErrorMessage(result.error);
           setSuccessMessage("");
