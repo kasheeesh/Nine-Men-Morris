@@ -9,6 +9,7 @@ function Login() {
 
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const validateForm = () => {
     const newErrors = {};
@@ -20,23 +21,45 @@ function Login() {
     }
     if (!formData.password) {
       newErrors.password = "Password is required.";
-    } else if (formData.password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters.";
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (validateForm()) {
-      setSuccessMessage("Login successful!");
-      setErrors({});
-      setFormData({
-        email: "",
-        password: "",
-      });
+      // Send request to the backend
+      try {
+        const response = await fetch("http://localhost:5000/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password,
+          }),
+        });
+
+        const result = await response.json();
+
+        if (response.status === 200) {
+          setSuccessMessage(result.message);
+          setErrorMessage("");
+          setFormData({
+            email: "",
+            password: "",
+          });
+        } else {
+          setErrorMessage(result.error);
+          setSuccessMessage("");
+        }
+      } catch (error) {
+        setErrorMessage("An error occurred. Please try again.");
+      }
     } else {
       setSuccessMessage("");
     }
@@ -52,6 +75,7 @@ function Login() {
         <h2>Login</h2>
 
         {successMessage && <p className="success-message">{successMessage}</p>}
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
 
         <div className="form-group">
           <label>Email</label>
