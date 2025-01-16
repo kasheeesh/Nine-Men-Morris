@@ -42,11 +42,11 @@ const LandingPage = () => {
             {/* Content over the video */}
             <div className="controls">
                 <div className="container">
-                    <Link to="/games">
-                        <button className="startb">Get Started</button>
-                    </Link>
                     <Link to="/signup">
                         <button className="signuppage">Sign Up</button>
+                    </Link>
+                    <Link to="/login">
+                        <button className="loginpage">Log in</button>
                     </Link>
                 </div>
                 <button onClick={toggleMute} className="mute-button">

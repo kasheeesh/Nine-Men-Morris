@@ -54,16 +54,16 @@
     padding: 7px;
 }
 
-.startb {
-    flex: 1; /* Allow it to take up equal space */
-    margin-left: 0; /* Remove extra margin */
-    margin-top: 0; /* Remove extra margin */
-}
-
 .signuppage {
     flex: 1; /* Allow it to take up equal space */
-    margin-left: 0; /* Remove extra margin */
-    margin-top: 0; /* Remove extra margin */
+    margin-left: 420px; /* Remove extra margin */
+    margin-top: 500px; /* Remove extra margin */
+}
+
+.loginpage {
+    flex: 1; /* Allow it to take up equal space */
+    margin-left: 420px; /* Remove extra margin */
+    margin-top: 500px; /* Remove extra margin */
 }
 
 .mute-button {
