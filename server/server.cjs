@@ -99,40 +99,40 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-// // Save Score API
-// app.post("/save-score", authenticateToken, async (req, res) => {
-//   try {
-//     const { score } = req.body;
+// Save Score API
+app.post("/save-score", authenticateToken, async (req, res) => {
+  try {
+    const { score } = req.body;
 
-//     if (typeof score !== "number") {
-//       return res.status(400).json({ error: "Invalid input data." });
-//     }
+    if (typeof score !== "number") {
+      return res.status(400).json({ error: "Invalid input data." });
+    }
 
-//     const username = req.user.username;
+    const username = req.user.username;
 
-//     const existingRecord = await db.collection(LEADERBOARD_COLLECTION).findOne({ username });
+    const existingRecord = await db.collection(LEADERBOARD_COLLECTION).findOne({ username });
 
-//     if (existingRecord) {
-//       // Update the score only if the new score is higher
-//       if (score > existingRecord.highestScore) {
-//         await db.collection(LEADERBOARD_COLLECTION).updateOne(
-//           { username },
-//           { $set: { highestScore: score } }
-//         );
-//       }
-//     } else {
-//       // Create a new record for the user
-//       await db.collection(LEADERBOARD_COLLECTION).insertOne({
-//         username,
-//         highestScore: score,
-//       });
-//     }
+    if (existingRecord) {
+      // Update the score only if the new score is higher
+      if (score > existingRecord.highestScore) {
+        await db.collection(LEADERBOARD_COLLECTION).updateOne(
+          { username },
+          { $set: { highestScore: score } }
+        );
+      }
+    } else {
+      // Create a new record for the user
+      await db.collection(LEADERBOARD_COLLECTION).insertOne({
+        username,
+        highestScore: score,
+      });
+    }
 
-//     res.status(200).json({ message: "Score saved successfully!" });
-//   } catch (err) {
-//     res.status(500).json({ error: "Internal server error." });
-//   }
-// });
+    res.status(200).json({ message: "Score saved successfully!" });
+  } catch (err) {
+    res.status(500).json({ error: "Internal server error." });
+  }
+});
 
 // Get Leaderboard API
 app.get("/leaderboard", async (req, res) => {
