@@ -41,9 +41,14 @@ const LandingPage = () => {
 
             {/* Content over the video */}
             <div className="controls">
-                <Link to="/games">
-                    <button className="startb">Get Started</button>
-                </Link>
+                <div className="container">
+                    <Link to="/games">
+                        <button className="startb">Get Started</button>
+                    </Link>
+                    <Link to="/signup">
+                        <button className="signuppage">Sign Up</button>
+                    </Link>
+                </div>
                 <button onClick={toggleMute} className="mute-button">
                     <img
                         src={isMuted ? noSoundIcon : speakerIcon}
