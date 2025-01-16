@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Signup.css";
 
 function Signup() {
@@ -12,6 +13,8 @@ function Signup() {
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
+  const navigate = useNavigate();
 
   const validateForm = () => {
     const newErrors = {};
@@ -54,7 +57,7 @@ function Signup() {
         });
 
         const result = await response.json();
-
+        navigate("/login");
         if (response.status === 201) {
           setSuccessMessage(result.message);
           setErrorMessage("");
