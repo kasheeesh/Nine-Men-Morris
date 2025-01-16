@@ -19,11 +19,11 @@
     /* Sends video to the background */
 }
 
-.startb {
+/* .startb {
     margin-left: 710px;
     margin-top: 480px;
     /* Brings content above the video */
-    color: black;
+    /* color: black;
     text-align: center;
     top: 50%;
     transform: translateY(-50%);
@@ -33,7 +33,39 @@
     background-color: rgb(216, 214, 214);
     border: 3px white solid;
     padding: 7px;
+} */ */
+
+.container {
+    display: flex;
+    justify-content: space-between; /* Space between the elements */
+    align-items: center; /* Vertically align the elements */
+    width: 100%;
+    height: 100vh;
 }
+
+.startb,
+.signuppage {
+    color: black;
+    text-align: center;
+    font-family: "Play", serif;
+    font-weight: 400;
+    background-color: rgb(216, 214, 214);
+    border: 3px white solid;
+    padding: 7px;
+}
+
+.signuppage {
+    flex: 1; /* Allow it to take up equal space */
+    margin-left: 420px; /* Remove extra margin */
+    margin-top: 500px; /* Remove extra margin */
+}
+
+.loginpage {
+    flex: 1; /* Allow it to take up equal space */
+    margin-left: 420px; /* Remove extra margin */
+    margin-top: 500px; /* Remove extra margin */
+}
+
 .mute-button {
     position: absolute;
     /* Allows positioning relative to the nearest positioned ancestor */
