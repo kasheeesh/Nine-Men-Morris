@@ -11,6 +11,7 @@ function Signup() {
 
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const validateForm = () => {
     const newErrors = {};
@@ -34,17 +35,42 @@ function Signup() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (validateForm()) {
-      setSuccessMessage("Signup successful!");
-      setErrors({});
-      setFormData({
-        username: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-      });
+      // Send request to the backend
+      try {
+        const response = await fetch("http://localhost:5000/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username: formData.username,
+            email: formData.email,
+            password: formData.password,
+          }),
+        });
+
+        const result = await response.json();
+
+        if (response.status === 201) {
+          setSuccessMessage(result.message);
+          setErrorMessage("");
+          setFormData({
+            username: "",
+            email: "",
+            password: "",
+            confirmPassword: "",
+          });
+        } else {
+          setErrorMessage(result.error);
+          setSuccessMessage("");
+        }
+      } catch (error) {
+        setErrorMessage("An error occurred. Please try again.");
+      }
     } else {
       setSuccessMessage("");
     }
@@ -60,6 +86,7 @@ function Signup() {
         <h2>Create an Account</h2>
 
         {successMessage && <p className="success-message">{successMessage}</p>}
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
 
         <div className="form-group">
           <label>Username</label>
