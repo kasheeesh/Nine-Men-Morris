@@ -236,7 +236,6 @@ const INITIAL_SHIP: SpaceshipType = {
     multishot: false
   }
 };
-
 export const Game: React.FC = () => {
   const [ship, setShip] = useState<SpaceshipType>(INITIAL_SHIP);
   const [score, setScore] = useState(0);
