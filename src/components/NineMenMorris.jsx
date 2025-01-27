@@ -1,10 +1,12 @@
 // NineMensMorris.js
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
+import { io } from "socket.io-client";
 import GameBoard from "./GameBoard";
 import GameInfo from "./GameInfo";
 import { checkForMills, handlePiecePlacement, isValidMove, isValidFlying} from "./GameLogic";
 import "./nine.css";
 import '../App.css';
+const socket = io("http://localhost:4000");
 
 const adjacencyMap = {
   O1: ["O2", "O8"],
@@ -111,6 +113,7 @@ const isLoser = (board, player) => {
   const playerPiecesCount = Object.values(board).filter((value) => value === player).length;
   return playerPiecesCount === 2;
 }
+
 
 const handlePointClick = (pointId) => {
     if (canRemove) return;
@@ -257,7 +260,7 @@ const handlePointClick = (pointId) => {
         }
     }
 };
- 
+
 
   
 
