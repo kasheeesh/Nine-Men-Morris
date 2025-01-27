@@ -10,7 +10,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-const MONGO_URI = "mongodb://192.168.0.111:27017"; // Replace with your MongoDB URI if different
+const MONGO_URI = "mongodb://localhost:27017";
 const DATABASE_NAME = "gameDB";
 const COLLECTION_NAME = "players";
 const LEADERBOARD_COLLECTION = "leaderboards";
