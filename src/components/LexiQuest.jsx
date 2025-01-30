@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './lexiquest.css';
 import words from '../assets/words.txt?raw';
 import Modal from './ModalLexi';
+import lexi from "../assets/lexi.mp4"
 
 // Generate random letter scores
 const generateLetterScores = () => {
@@ -146,7 +147,12 @@ const renderKeyboard = () => {
 
 
   return (
-    <div className="app" tabIndex={0} onKeyDown={handleKeyDown}>
+    <div className='game-containerk'>
+      <video autoPlay loop muted className="background-video">
+              <source src={lexi} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+      <div className="app" tabIndex={0} onKeyDown={handleKeyDown}>
   <div className="grid">
     {board.map((row, rowIndex) => (
       <div key={rowIndex} className="row-wrapper">
@@ -178,6 +184,7 @@ const renderKeyboard = () => {
     />
   )}
 </div>
+    </div>
 
   );
 };

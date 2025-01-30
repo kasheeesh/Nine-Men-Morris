@@ -1,24 +1,21 @@
 body{
-    background-color: grey;
-    
-    
-
+    background-image: url("C:/Users/kashi/Desktop/nine-men-morris/nineMenMorris/src/assets/nmm (4).jpg");
 }
 .game-board {
     position: relative;
     width: 700px;
     height: 700px;
-    background-color: #f8f8f8;
+    /* background-color: #f8f8f8; */
     margin: auto;
     margin-top: 50px;
-    border: 2px solid #000;
+    border: 2px solid #fdfbfb;
     
 }
 
 
 .square {
     position: absolute;
-    border: 2px solid #000;
+    border: 2px solid #fff9f9;
 }
 
 .outer {
@@ -48,7 +45,7 @@ body{
     width: 20px;
     height: 20px;
     background-color: white;
-    border: 2px solid black;
+    border: 2px solid rgb(235, 231, 231);
     border-radius: 50%;
     transform: translate(-50%, -50%);
     

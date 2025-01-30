@@ -3,6 +3,7 @@ import React, { useState , useEffect } from "react";
 import { io } from "socket.io-client";
 import GameBoard from "./GameBoard";
 import GameInfo from "./GameInfo";
+import sw from "../assets/sww.mp4"
 import { checkForMills, handlePiecePlacement, isValidMove, isValidFlying} from "./GameLogic";
 import "./nine.css";
 import '../App.css';
@@ -294,7 +295,12 @@ const handlePointClick = (pointId) => {
   };
 
   return (
-    <div className="game">
+    <div className="game-containerk">
+       <video autoPlay loop muted className="background-video">
+        <source src={sw} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      <div className="game">
       <GameBoard
         allPoints={allPoints}
         board={board}
@@ -310,6 +316,7 @@ const handlePointClick = (pointId) => {
         isFlyingPhase={isFlyingPhase}
         canRemove={canRemove}
       />
+    </div>
     </div>
   );
 };
