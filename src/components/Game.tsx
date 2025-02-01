@@ -409,20 +409,21 @@ export const Game: React.FC = () => {
       {meteorites.map((meteorite, index) => (
         meteorite.active && <Meteorite key={index} meteorite={meteorite} />
       ))}
-      {bullets.map((bullet, index) => (
-        bullet.active && (
-          <div
-            key={index}
-            className="absolute bg-yellow-400 rounded-full"
-            style={{
-              left: bullet.x,
-              top: bullet.y,
-              width: bullet.width,
-              height: bullet.height
-            }}
-          />
-        )
-      ))}
+      {bullets.map(function (bullet, index) {
+        return (
+          bullet.active && (
+            <div
+              key={index}
+              className="absolute bg-yellow-400 rounded-full"
+              style={{
+                left: bullet.x,
+                top: bullet.y,
+                width: bullet.width,
+                height: bullet.height
+              }} />
+          )
+        );
+      })}
       {powerups.map((powerup, index) => (
         powerup.active && <PowerUpItem key={index} powerup={powerup} />
       ))}

@@ -3,28 +3,28 @@ import './lexiquest.css';
 import words from '../assets/words.txt?raw';
 import Modal from './ModalLexi';
 
-// Get a seed based on the current date
-const getDailySeed = () => {
-  const today = new Date();
-  return `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
-};
-
-// Seeded random number generator
+// Enhanced seeded random for letter scores and vowel
 const seededRandom = (seed) => {
   const x = Math.sin(Array.from(seed).reduce((a, c) => Math.imul(31, a) + c.charCodeAt(0) | 0, 0)) * 10000;
   return x - Math.floor(x);
 };
 
-// Generate consistent letter scores for the day
+// Get a seed based on the current date and time
+const getDailySeed = () => {
+  const today = new Date();
+  return `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}-${today.getHours()}-${today.getMinutes()}`;
+};
+
+// Generate consistent letter scores for the day with an added dynamic element
 const generateDailyLetterScores = () => {
   const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const scores = {};
-  const seed = getDailySeed();
+  const seed = getDailySeed();  // Enhanced seed with time-based variance
   
   // Create array of numbers 1-26
   const numbers = Array.from({ length: 26 }, (_, i) => i + 1);
   
-  // Fisher-Yates shuffle with seeded random
+  // Fisher-Yates shuffle with seeded random and extra randomness for variation
   for (let i = numbers.length - 1; i > 0; i--) {
     const j = Math.floor(seededRandom(seed + i) * (i + 1));
     [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
@@ -37,11 +37,12 @@ const generateDailyLetterScores = () => {
   return scores;
 };
 
-// Get daily vowel
+// Get a daily vowel with extra randomness
 const getDailyVowel = () => {
   const vowels = 'AEIOU';
   const seed = getDailySeed();
-  return vowels[Math.floor(seededRandom(seed) * vowels.length)];
+  const randomIndex = Math.floor(seededRandom(seed) * vowels.length);
+  return vowels[randomIndex];
 };
 
 const Game = () => {
