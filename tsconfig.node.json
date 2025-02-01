@@ -2,14 +2,15 @@
   "compilerOptions": {
     "target": "ES2022",
     "lib": ["ES2023"],
-    "module": "CommonJS",  // Use CommonJS for Node.js compatibility
-    "moduleResolution": "node",  // Use node resolution strategy
-    "allowImportingTsExtensions": true,
+    "module": "CommonJS",
+    "moduleResolution": "node",
     "esModuleInterop": true,
     "isolatedModules": true,
-    "noEmit": true
+    "noEmit": true,
+    "allowJs": true
   },
   "include": [
-    "server/**/*.ts"
-, "server/server.cjs"  ]
+    "server/**/*.ts",
+    "server/server.cjs"
+  ]
 }

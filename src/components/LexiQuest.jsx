@@ -1,191 +1,192 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './lexiquest.css';
 import words from '../assets/words.txt?raw';
 import Modal from './ModalLexi';
-import lexi from "../assets/lexi.mp4"
 
-// Generate random letter scores
-const generateLetterScores = () => {
+// Get a seed based on the current date
+const getDailySeed = () => {
+  const today = new Date();
+  return `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+};
+
+// Seeded random number generator
+const seededRandom = (seed) => {
+  const x = Math.sin(Array.from(seed).reduce((a, c) => Math.imul(31, a) + c.charCodeAt(0) | 0, 0)) * 10000;
+  return x - Math.floor(x);
+};
+
+// Generate consistent letter scores for the day
+const generateDailyLetterScores = () => {
   const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const scores = {};
-  const shuffledNumbers = Array.from({ length: 26 }, (_, i) => i + 1).sort(() => Math.random() - 0.5);
+  const seed = getDailySeed();
+  
+  // Create array of numbers 1-26
+  const numbers = Array.from({ length: 26 }, (_, i) => i + 1);
+  
+  // Fisher-Yates shuffle with seeded random
+  for (let i = numbers.length - 1; i > 0; i--) {
+    const j = Math.floor(seededRandom(seed + i) * (i + 1));
+    [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
+  }
   
   letters.split('').forEach((letter, index) => {
-    scores[letter] = shuffledNumbers[index];
+    scores[letter] = numbers[index];
   });
 
   return scores;
 };
 
-// Get a random vowel for the golden vowel
-const getRandomVowel = () => {
+// Get daily vowel
+const getDailyVowel = () => {
   const vowels = 'AEIOU';
-  return vowels[Math.floor(Math.random() * vowels.length)];
+  const seed = getDailySeed();
+  return vowels[Math.floor(seededRandom(seed) * vowels.length)];
 };
 
-// Main Game Component
 const Game = () => {
+  const [username, setUsername] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [board, setBoard] = useState(Array(5).fill('').map(() => Array(5).fill('')));
   const [scores, setScores] = useState([]);
   const [totalScore, setTotalScore] = useState(0);
   const [currentRow, setCurrentRow] = useState(0);
   const [currentCol, setCurrentCol] = useState(0);
-  const [letterScores] = useState(generateLetterScores());
-  const [goldenVowel] = useState(getRandomVowel());
-  const [usedLettersByColumn, setUsedLettersByColumn] = useState(Array(5).fill(new Set()));
-  const [showModal, setShowModal] = useState(false);  // State for modal visibility
+  const [letterScores] = useState(generateDailyLetterScores());
+  const [goldenVowel] = useState(getDailyVowel());
+  const [usedLettersByColumn, setUsedLettersByColumn] = useState(Array(5).fill().map(() => new Set()));
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
 
   const wordList = words.split("\n").map(word => word.trim().toUpperCase());
   const validWords = new Set(wordList);
 
-  // Handle key press events
-  const handleKeyDown = (e) => {
-    if (currentRow >= 5) return;
+  useEffect(() => {
+    const savedUsername = localStorage.getItem('lexiquest-username');
+    if (savedUsername) {
+      setUsername(savedUsername);
+      setIsLoggedIn(true);
+      loadGameState(savedUsername);
+    }
 
-    const key = e.key.toUpperCase();
+    const handleKeyDown = (e) => {
+      if (!isLoggedIn || currentRow >= 5) return;
+      const key = e.key.toUpperCase();
 
-    if (key === 'BACKSPACE') {
-      handleBackspace();
-    } else if (/^[A-Z]$/.test(key)) {
-      handleLetterInput(key);
-    } else if (key === 'ENTER') {
-      handleSubmit();
+      if (key === 'BACKSPACE') handleBackspace();
+      else if (/^[A-Z]$/.test(key)) handleLetterInput(key);
+      else if (key === 'ENTER') handleSubmit();
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isLoggedIn, currentRow, currentCol]);
+
+  const loadGameState = (user) => {
+    const savedState = localStorage.getItem(`lexiquest-state-${user}-${getDailySeed()}`);
+    if (savedState) {
+      const state = JSON.parse(savedState);
+      setBoard(state.board);
+      setScores(state.scores);
+      setTotalScore(state.totalScore);
+      setCurrentRow(state.currentRow);
+      setCurrentCol(state.currentCol);
+      setUsedLettersByColumn(state.usedLettersByColumn.map(set => new Set(set)));
     }
   };
 
-  // Handle BACKSPACE input
-  const handleBackspace = () => {
-    if (currentCol > 0 || board[currentRow][currentCol]) {
-      const newCol = currentCol === 0 ? 0 : currentCol - 1;
-      const newBoard = [...board];
-      newBoard[currentRow][newCol] = '';
-      setBoard(newBoard);
-      setCurrentCol(newCol);
+  const saveGameState = () => {
+    if (!username) return;
+    const gameState = {
+      board,
+      scores,
+      totalScore,
+      currentRow,
+      currentCol,
+      usedLettersByColumn: usedLettersByColumn.map(set => Array.from(set))
+    };
+
+    localStorage.setItem(`lexiquest-state-${username}-${getDailySeed()}`, JSON.stringify(gameState));
+  };
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (username.trim()) {
+      localStorage.setItem('lexiquest-username', username);
+      setIsLoggedIn(true);
+      loadGameState(username);
     }
+  };
+
+  const handleBackspace = () => {
+    setBoard(prevBoard => {
+      const newBoard = prevBoard.map(row => [...row]);
+      newBoard[currentRow][Math.max(0, currentCol - 1)] = '';
+      return newBoard;
+    });
+    setCurrentCol(prev => Math.max(0, prev - 1));
+    saveGameState();
   };
 
   const handleLetterInput = (letter) => {
-  for (let row = 0; row < currentRow; row++) {
-    if (board[row][currentCol] === letter && letter !== goldenVowel) {
-      return; // Prevent reuse of letters in the same column unless it's the golden vowel
+    if (currentCol < 5) {
+      setBoard(prevBoard => {
+        const newBoard = prevBoard.map(row => [...row]);
+        newBoard[currentRow][currentCol] = letter;
+        return newBoard;
+      });
+      setCurrentCol(prev => prev + 1);
+      saveGameState();
     }
-  }
+  };
 
-  if (currentCol < 5) {
-    const newBoard = [...board];
-    newBoard[currentRow][currentCol] = letter;
-    setBoard(newBoard);
-    setCurrentCol(currentCol + 1);
-  }
-};
-
-
-  // Handle word submission
   const handleSubmit = () => {
     if (currentCol === 5) {
       const word = board[currentRow].join('');
       if (validWords.has(word)) {
         const score = calculateScore(word);
-        updateUsedLetters(word);
-        setScores([...scores, score]);
-        setTotalScore(totalScore + score);
-        setCurrentRow(currentRow + 1);
+        setScores(prevScores => [...prevScores, score]);
+        setTotalScore(prev => prev + score);
+        setCurrentRow(prev => prev + 1);
         setCurrentCol(0);
+        saveGameState();
       } else {
+        setModalMessage("Invalid word!");
         setShowModal(true);
       }
     }
   };
 
-  // Calculate the score for a word
   const calculateScore = (word) => {
-    return word.split('').reduce((sum, letter) => {
-      return sum + (letterScores[letter] || 0);
-    }, 0);
+    return word.split('').reduce((sum, letter) => sum + (letterScores[letter] || 0), 0);
   };
 
-  // Update the letters used in each column
-  const updateUsedLetters = (word) => {
-    const newUsedLettersByColumn = [...usedLettersByColumn];
-    word.split('').forEach((letter, colIndex) => {
-      if (letter) newUsedLettersByColumn[colIndex].add(letter);
-    });
-    setUsedLettersByColumn(newUsedLettersByColumn);
-  };
-  const closeModal = () => {
-    setShowModal(false);
-  };
+  const closeModal = () => setShowModal(false);
 
-const renderKeyboard = () => {
-  const rows = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'];
-
-  const currentColumnUsedLetters = new Set();
-  for (let row = 0; row < currentRow; row++) {
-    if (board[row][currentCol] && board[row][currentCol] !== goldenVowel) {
-      currentColumnUsedLetters.add(board[row][currentCol]);
-    }
-  }
-
-  return rows.map((row, rowIndex) => (
-    <div key={rowIndex} className="keyboard-row">
-      {row.split('').map((letter) => {
-        const isGoldenVowel = letter === goldenVowel;
-        const isUsed = currentColumnUsedLetters.has(letter) && !isGoldenVowel;
-        return (
-          <div
-            key={letter}
-            className={`key ${isGoldenVowel ? 'golden' : ''} ${isUsed ? 'used' : ''}`}
-            onClick={() => handleLetterInput(letter)} // Add onClick handler
-          >
-            {letter} <span className="score">{letterScores[letter]}</span>
+  return !isLoggedIn ? (
+    <div className="login-container">
+      <form onSubmit={handleLogin}>
+        <input type="text" placeholder="Enter your name" value={username} onChange={(e) => setUsername(e.target.value)} />
+        <button type="submit">Start Playing</button>
+      </form>
+    </div>
+  ) : (
+    <div className="app">
+      <h2>Player: {username}</h2>
+      <div className="grid">
+        {board.map((row, rowIndex) => (
+          <div key={rowIndex} className="row">
+            {row.map((letter, colIndex) => (
+              <div key={`${rowIndex}-${colIndex}`} className="cell">
+                {letter}
+              </div>
+            ))}
           </div>
-        );
-      })}
-    </div>
-  ));
-};
-
-
-  return (
-    <div className='game-containerk'>
-      <video autoPlay loop muted className="background-video">
-              <source src={lexi} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-      <div className="app" tabIndex={0} onKeyDown={handleKeyDown}>
-  <div className="grid">
-    {board.map((row, rowIndex) => (
-      <div key={rowIndex} className="row-wrapper">
-        <div className="row">
-          {row.map((letter, colIndex) => (
-            <div key={`${rowIndex}-${colIndex}`} className={`cell ${rowIndex === currentRow ? 'active' : ''}`}>
-              {letter}
-            </div>
-          ))}
-        </div>
-        <div className="score-box">
-          {rowIndex < scores.length ? scores[rowIndex] : ''}
-        </div>
+        ))}
       </div>
-    ))}
-    <div className="total-score">{totalScore}</div>
-  </div>
-
-  <div className="keyboard">{renderKeyboard()}</div>
-  <div className="sidebar">
-    <button className = "submitbutt" onClick={handleSubmit} disabled={currentRow >= 5 || currentCol < 5}>
-      Submit Word
-    </button>
-  </div>
-  {showModal && (
-    <Modal
-      message="Nice try! But that word doesn't exist in our dictionary."
-      onClose={closeModal}
-    />
-  )}
-</div>
+      <button onClick={handleSubmit} disabled={currentRow >= 5 || currentCol < 5}>Submit Word</button>
+      {showModal && <Modal message={modalMessage} onClose={closeModal} />}
     </div>
-
   );
 };
 
