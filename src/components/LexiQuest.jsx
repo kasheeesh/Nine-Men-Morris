@@ -1,29 +1,54 @@
-
-
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import './lexiquest.css';
 import words from '../assets/words.txt?raw';
 import Modal from './ModalLexi';
 import lexi from "../assets/lexi.mp4"
+import axios from 'axios'; // Import axios for API calls
 
-// Generate random letter scores
-const generateLetterScores = () => {
+const getDailySeed = () => {
+  const today = new Date();
+  return `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+};
+
+// Seeded random number generator
+const seededRandom = (seed) => {
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    hash = Math.imul(31, hash) + seed.charCodeAt(i) | 0;
+  }
+  const x = Math.sin(hash) * 10000;
+  return x - Math.floor(x);
+};
+
+// Generate consistent letter scores for the day
+const generateDailyLetterScores = () => {
   const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const scores = {};
-  const shuffledNumbers = Array.from({ length: 26 }, (_, i) => i + 1).sort(() => Math.random() - 0.5);
+  const seed = getDailySeed();
+  
+  // Create array of numbers 1-26
+  const numbers = Array.from({ length: 26 }, (_, i) => i + 1);
+  
+  // Fisher-Yates shuffle with seeded random
+  for (let i = numbers.length - 1; i > 0; i--) {
+    const j = Math.floor(seededRandom(seed + String(i)) * (i + 1));
+    [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
+  }
   
   letters.split('').forEach((letter, index) => {
-    scores[letter] = shuffledNumbers[index];
+    scores[letter] = numbers[index];
   });
 
   return scores;
 };
 
-// Get a random vowel for the golden vowel
-const getRandomVowel = () => {
+// Get daily vowel
+const getDailyVowel = () => {
   const vowels = 'AEIOU';
-  return vowels[Math.floor(Math.random() * vowels.length)];
+  const seed = getDailySeed();
+  return vowels[Math.floor(seededRandom(seed) * vowels.length)];
 };
+
 
 // Main Game Component
 const Game = () => {
@@ -32,10 +57,13 @@ const Game = () => {
   const [totalScore, setTotalScore] = useState(0);
   const [currentRow, setCurrentRow] = useState(0);
   const [currentCol, setCurrentCol] = useState(0);
-  const [letterScores] = useState(generateLetterScores());
-  const [goldenVowel] = useState(getRandomVowel());
+  const [letterScores] = useState(generateDailyLetterScores());
+  const [goldenVowel] = useState(getDailyVowel());
   const [usedLettersByColumn, setUsedLettersByColumn] = useState(Array(5).fill(new Set()));
   const [showModal, setShowModal] = useState(false);  // State for modal visibility
+  const[gameOver, setGameOver] = useState(false);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const[leaderboard, setLeaderboard] = useState([]);
 
   const wordList = words.split("\n").map(word => word.trim().toUpperCase());
   const validWords = new Set(wordList);
@@ -99,6 +127,31 @@ const Game = () => {
     }
   };
 
+  
+  const isGameOver = () =>{
+    if(currentRow >=5){
+      const token = localStorage.getItem('token');
+      console.log(totalScore);
+      axios.post('http://localhost:5000/save-score-lexi', { totalScore }, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(() => console.log('Score saved successfully'))
+        .catch(err => console.error('Error saving score:', err));
+      setGameOver(true);
+      return;
+    }
+  }
+  const handleLeaderboard = () => {
+    axios.get('http://localhost:5000/leaderboardlexi')
+      .then(response => {
+        console.log(response.data);
+        setLeaderboard(response.data);
+        setShowLeaderboard(true);
+      })
+      .catch(err => console.error('Error fetching leaderboard:', err));
+  };
+
+
   // Calculate the score for a word
   const calculateScore = (word) => {
     return word.split('').reduce((sum, letter) => {
@@ -118,6 +171,7 @@ const Game = () => {
     setShowModal(false);
   };
 
+
 const renderKeyboard = () => {
   const rows = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'];
 
@@ -129,6 +183,7 @@ const renderKeyboard = () => {
   }
 
   return rows.map((row, rowIndex) => (
+    
     <div key={rowIndex} className="keyboard-row">
       {row.split('').map((letter) => {
         const isGoldenVowel = letter === goldenVowel;
@@ -144,8 +199,16 @@ const renderKeyboard = () => {
         );
       })}
     </div>
+
   ));
 };
+// import { useEffect, useState } from "react";
+
+
+useEffect(() => {
+    isGameOver();
+}, [totalScore]);  // Runs whenever `score` changes
+
 
 
   return (
@@ -185,6 +248,38 @@ const renderKeyboard = () => {
       onClose={closeModal}
     />
   )}
+  {gameOver && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-75">
+          <div className="text-white text-center">
+            <h2 className="text-4xl font-bold mb-4">Game Over</h2>
+            <p className="text-2xl">Final Score: {totalScore}</p>
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded"
+              onClick={handleLeaderboard}
+            >
+              View Leaderboard
+            </button>
+          </div>
+        </div>
+      )}
+      {showLeaderboard && (
+        <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-75 flex items-center justify-center">
+          <div className="text-white text-center">
+            <h2 className="text-4xl font-bold mb-4">Leaderboard</h2>
+            <ul className="list-none">
+              {leaderboard.map((entry, index) => (
+                <li key={index} className="mb-2 text-lg">{`${index + 1}. ${entry.username} - ${entry.highestScore}`}</li>
+              ))}
+            </ul>
+            <button
+              className="bg-red-500 text-white px-4 py-2 rounded mt-4"
+              onClick={() => setShowLeaderboard(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
 </div>
     </div>
 

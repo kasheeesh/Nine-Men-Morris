@@ -9,11 +9,13 @@ const SECRET_KEY = "your_secret_key"; // Replace with a secure, randomly generat
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.json());
 
 const MONGO_URI = "mongodb://localhost:27017";
 const DATABASE_NAME = "gameDB";
 const COLLECTION_NAME = "players";
 const LEADERBOARD_COLLECTION = "leaderboards";
+const LEXIQUEST_LEADERBOARD = "leaderboardlexi";
 
 let db;
 
@@ -134,6 +136,42 @@ app.post("/save-score", authenticateToken, async (req, res) => {
   }
 });
 
+app.post("/save-score-lexi", authenticateToken, async (req, res) => {
+  try {
+    const { totalScore } = req.body;
+    console.log(req.body);
+    // console.log(score)
+
+    if (typeof totalScore !== "number") {
+      return res.status(400).json({ error: "Invalid input data." });
+    }
+
+    const username = req.user.username;
+
+    const existingRecord = await db.collection(LEXIQUEST_LEADERBOARD).findOne({ username });
+
+    if (existingRecord) {
+      // Update the score only if the new score is higher
+      if (totalScore > existingRecord.highestScore) {
+        await db.collection(LEXIQUEST_LEADERBOARD).updateOne(
+          { username },
+          { $set: { highestScore: totalScore } }
+        );
+      }
+    } else {
+      // Create a new record for the user
+      await db.collection(LEXIQUEST_LEADERBOARD).insertOne({
+        username,
+        highestScore: totalScore,
+      });
+    }
+
+    res.status(200).json({ message: "Score saved successfully!" });
+  } catch (err) {
+    res.status(500).json({ error: "Internal server error." });
+  }
+});
+
 // Get Leaderboard API
 app.get("/leaderboard", async (req, res) => {
   try {
@@ -144,6 +182,19 @@ app.get("/leaderboard", async (req, res) => {
       .toArray();
 
     res.status(200).json(leaderboard);
+  } catch (err) {
+    res.status(500).json({ error: "Internal server error." });
+  }
+});
+app.get("/leaderboardlexi", async (req, res) => {
+  try {
+    const leaderboardlexi = await db
+      .collection(LEXIQUEST_LEADERBOARD)
+      .find({})
+      .sort({ highestScore: -1 }) // Sort by score in descending order
+      .toArray();
+
+    res.status(200).json(leaderboardlexi);
   } catch (err) {
     res.status(500).json({ error: "Internal server error." });
   }

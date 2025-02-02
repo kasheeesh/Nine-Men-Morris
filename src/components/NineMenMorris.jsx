@@ -1,13 +1,11 @@
 // NineMensMorris.js
 import React, { useState , useEffect } from "react";
-import { io } from "socket.io-client";
 import GameBoard from "./GameBoard";
 import GameInfo from "./GameInfo";
 import sw from "../assets/sww.mp4"
 import { checkForMills, handlePiecePlacement, isValidMove, isValidFlying} from "./GameLogic";
 import "./nine.css";
 import '../App.css';
-const socket = io("http://localhost:4000");
 
 const adjacencyMap = {
   O1: ["O2", "O8"],
