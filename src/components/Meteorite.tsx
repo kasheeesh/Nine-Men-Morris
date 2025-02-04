@@ -8,7 +8,8 @@ interface Props {
 export const Meteorite: React.FC<Props> = ({ meteorite }) => {
   return (
     <div
-      className="absolute rounded-full bg-gray-400"
+     className="absolute bg-gray-600 w-12 h-12 rounded-full shadow-lg blur-[0.5px] border-[3px] border-gray-500 border-dashed"
+
       style={{
         left: meteorite.x,
         top: meteorite.y,

@@ -15,7 +15,7 @@ export const Spaceship: React.FC<Props> = ({ ship }) => {
         filter: ship.powerups.shield ? 'drop-shadow(0 0 8px #60A5FA)' : 'none'
       }}
     >
-      <Rocket size={32} className="text-blue-500" />
+      <Rocket size={32} className="text-green-500" />
       <div className="absolute -top-4 left-0 w-full">
         <div className="w-full bg-gray-700 rounded-full h-2">
           <div 

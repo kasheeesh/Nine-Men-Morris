@@ -7,6 +7,7 @@ import { checkForMills, handlePiecePlacement, isValidMove, isValidFlying} from "
 import "./nine.css";
 import '../App.css';
 
+
 const adjacencyMap = {
   O1: ["O2", "O8"],
   O2: ["O1", "O3", "M2"],
@@ -108,6 +109,8 @@ const NineMensMorris = () => {
   const playerPiecesCount = Object.values(board).filter((value) => value === player).length;
   return playerPiecesCount === 3;
 };
+
+
 const isLoser = (board, player) => {
   const playerPiecesCount = Object.values(board).filter((value) => value === player).length;
   return playerPiecesCount === 2;
@@ -259,10 +262,6 @@ const handlePointClick = (pointId) => {
         }
     }
 };
-
-
-  
-
   const handleRemoveChecker = (pointId) => {
     if (!canRemove || !board[pointId]) return;
 

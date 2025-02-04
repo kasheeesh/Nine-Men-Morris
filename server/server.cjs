@@ -5,11 +5,19 @@ const cors = require("cors");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const SECRET_KEY = "your_secret_key"; // Replace with a secure, randomly generated key
+const http = require("http"); 
+
+
 
 const app = express();
+const server = http.createServer(app);
+
+
+// Keep track of players in a room
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.json());
+
 
 const MONGO_URI = "mongodb://localhost:27017";
 const DATABASE_NAME = "gameDB";
@@ -28,6 +36,9 @@ MongoClient.connect(MONGO_URI)
   .catch((err) => {
     console.error("MongoDB connection error:", err);
   });
+
+  // Create an HTTP server for Socket.IO integration
+// const server = http.createServer(app);
 
 // Signup API
 app.post("/signup", async (req, res) => {
@@ -188,10 +199,13 @@ app.get("/leaderboard", async (req, res) => {
 });
 app.get("/leaderboardlexi", async (req, res) => {
   try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set to the start of the day
+
     const leaderboardlexi = await db
       .collection(LEXIQUEST_LEADERBOARD)
-      .find({})
-      .sort({ highestScore: -1 }) // Sort by score in descending order
+      .find({ date: { $gte: today } }) // Fetch today's records only
+      .sort({ highestScore: -1 })
       .toArray();
 
     res.status(200).json(leaderboardlexi);
@@ -200,6 +214,10 @@ app.get("/leaderboardlexi", async (req, res) => {
   }
 });
 
+
 // Start server
+// const PORT = 5000;
+// app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+
 const PORT = 5000;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+server.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
