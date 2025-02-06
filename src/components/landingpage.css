@@ -18,6 +18,24 @@
     z-index: -1;
     /* Sends video to the background */
 }
+.start-btn {
+    text-align: center;
+    display: inline-block;
+    margin: 5px;
+    font-weight: bold;
+    padding: 10px 0 10px 10px;
+    background-color: lightgray;
+    text-shadow: -1px -1px black, 1px 1px white;
+    color: gray;
+    font-family: 'Press Start 2p';
+    -webkit-border-radius: 7px;
+    -moz-border-radius: 7px;
+    -o-border-radius: 7px;
+    border-radius: 7px;
+    box-shadow: 0 .2em gray;
+    cursor: pointer;
+
+}
 
 /* .startb {
     margin-left: 710px;
@@ -47,23 +65,25 @@
 .signuppage {
     color: black;
     text-align: center;
-    font-family: "Play", serif;
-    font-weight: 400;
-    background-color: rgb(216, 214, 214);
-    border: 3px white solid;
+    font-family: 'Press Start 2p';
+
+    
     padding: 7px;
 }
 
 .signuppage {
-    flex: 1; /* Allow it to take up equal space */
-    margin-left: 420px; /* Remove extra margin */
-    margin-top: 500px; /* Remove extra margin */
+    flex: 1; 
+    margin-left: 420px;
+    margin-top: 500px; 
 }
 
 .loginpage {
-    flex: 1; /* Allow it to take up equal space */
-    margin-left: 420px; /* Remove extra margin */
-    margin-top: 500px; /* Remove extra margin */
+    flex: 1; 
+    margin-left: 420px;
+    margin-top: 500px; 
+    color: black;
+    padding: 7px;
+
 }
 
 .mute-button {

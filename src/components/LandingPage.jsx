@@ -43,10 +43,10 @@ const LandingPage = () => {
             <div className="controls">
                 <div className="container">
                     <Link to="/signup">
-                        <button className="signuppage">Sign Up</button>
+                        <button className="start-btn signuppage">Sign Up</button>
                     </Link>
                     <Link to="/login">
-                        <button className="loginpage">Log in</button>
+                        <button className="start-btn loginpage">Log in</button>
                     </Link>
                 </div>
                 <button onClick={toggleMute} className="mute-button">

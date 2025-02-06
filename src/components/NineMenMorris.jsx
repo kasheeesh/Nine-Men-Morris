@@ -1,5 +1,5 @@
 // NineMensMorris.js
-import React, { useState , useEffect } from "react";
+import React, { useState} from "react";
 import GameBoard from "./GameBoard";
 import GameInfo from "./GameInfo";
 import sw from "../assets/sww.mp4"
