@@ -4,22 +4,21 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const SECRET_KEY = "your_secret_key"; // Replace with a secure, randomly generated key
 const http = require("http"); 
 
+const setupSocket = require("./socket.cjs");
 
-
+const SECRET_KEY = "your_secret_key"; 
 const app = express();
 const server = http.createServer(app);
 
 
-// Keep track of players in a room
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.json());
 
 
-const MONGO_URI = "mongodb://localhost:27017/";
+const MONGO_URI = "mongodb://localhost:27017";
 const DATABASE_NAME = "gameDB";
 const COLLECTION_NAME = "players";
 const LEADERBOARD_COLLECTION = "leaderboards";
@@ -32,13 +31,17 @@ MongoClient.connect(MONGO_URI)
   .then((client) => {
     console.log("Connected to MongoDB");
     db = client.db(DATABASE_NAME);
+
+    // Setup Socket.IO with the existing server and pass the db instance
+    setupSocket(server, db);
+
+    // Start the server after everything is set up
+    server.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
   })
   .catch((err) => {
     console.error("MongoDB connection error:", err);
   });
 
-  // Create an HTTP server for Socket.IO integration
-// const server = http.createServer(app);
 
 // Signup API
 app.post("/signup", async (req, res) => {
@@ -214,10 +217,6 @@ app.get("/leaderboardlexi", async (req, res) => {
   }
 });
 
-
-// Start server
-// const PORT = 5000;
-// app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 
 const PORT = 5000;
 server.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
