@@ -6,6 +6,7 @@ const GameRedirector = () => {
     { name: 'Nine Men Morris', link: '/games/ninemenmorris' },
     { name: 'Space Shooter', link: '/games/spaceshooter' },
     { name: 'LexiQuest', link: '/games/lexiquest' },
+    {name :'MiniSweeper',link: '/games/minisweeper'}
   ];
 
   return (
