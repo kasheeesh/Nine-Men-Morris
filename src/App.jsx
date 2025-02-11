@@ -6,6 +6,7 @@ import Games from './components/Games';
 import LandingPage from './components/LandingPage';
 import Signup from './components/SignUp';
 import Login from './components/Login';
+import MiniSweeper from './components/MiniSweeper';
 
 function App() {
   return (
@@ -17,9 +18,11 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/games" element={<Games />} />
         
+        
         <Route path="/games/ninemenmorris" element={<NineMensMorris />} />
         <Route path="/games/lexiquest" element={<Lexi />} />
         <Route path="/games/spaceshooter" element={<Game />} />
+        <Route path='/games/minisweeper' element={<MiniSweeper/>} />
       </Routes>
     </Router>
   );
