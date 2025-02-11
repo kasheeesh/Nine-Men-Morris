@@ -412,7 +412,7 @@ const GameRedirector = () => {
       link: '/games/lexiquest', // Link for LexiQuest
       noButtons: true,
     },
-    {name :'MiniSweeper',link: '/games/minisweeper'}
+    {name :'MiniSweeper',link: '/games/minisweeper', noButtons: true,}
   ];
 
   return (
