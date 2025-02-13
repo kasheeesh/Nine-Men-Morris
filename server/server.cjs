@@ -219,4 +219,4 @@ app.get("/leaderboardlexi", async (req, res) => {
 
 
 const PORT = 5000;
-server.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+// server.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

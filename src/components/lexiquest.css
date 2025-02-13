@@ -38,6 +38,9 @@ body{
 .submitbutt{
     color:black;
     margin-left: 700px;
+    background-color: #ccc;
+    font-size: 18px;
+    border-radius: 5px;
 }
 .app:focus {
     outline: none;
@@ -56,11 +59,12 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid #ccc;
-    font-size: 18px;
+    border: 3px solid #ccc;
+    font-size: 23px;
     font-weight: bold;
     text-transform: uppercase;
     color:#ccc;
+    border-radius: 5px;
     
 }
 
@@ -76,16 +80,16 @@ body{
 }
 
 .key {
-    width: 50px;
-    height: 50px;
+    width: 55px;
+    height: 55px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
-    background-color: grey;
+    border: 3px solid #4b4545;
+    border-radius: 10px;
+    font-size: 16px;
+    background-color: rgb(226, 216, 216);
 }
 
 .key.golden {
@@ -117,7 +121,7 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid #ccc;
+    border: 3px solid #ccc;
     /* background-color: #f4f4f4; */
     font-size: 16px;
     font-weight: bold;
@@ -134,7 +138,7 @@ body{
         display: flex;
         justify-content: center;
         align-items: center;
-        border: 1px solid #ccc;
+        border: 3px solid #ccc;
         /* background-color: #f4f4f4; */
         font-size: 16px;
         font-weight: bold;

@@ -192,64 +192,6 @@ export const Game: React.FC = () => {
   };
 
   return (
-    // <div className="w-full h-screen bg-black overflow-hidden relative">
-    //   <GameHUD score={score} lives={ship.lives} wave={wave} />
-    //   <WaveAnnouncement wave={wave} visible={showAnnouncement} />
-    //   <Spaceship ship={ship} />
-    //   {meteorites.map((meteorite, index) => (
-    //     meteorite.active && <Meteorite key={index} meteorite={meteorite} />
-    //   ))}
-    //   {bullets.map(function (bullet, index) {
-    //     return (
-    //       bullet.active && (
-    //         <div
-    //           key={index}
-    //           className="absolute bg-yellow-400 rounded-full"
-    //           style={{
-    //             left: bullet.x,
-    //             top: bullet.y,
-    //             width: bullet.width,
-    //             height: bullet.height
-    //           }} />
-    //       )
-    //     );
-    //   })}
-    //   {powerups.map((powerup, index) => (
-    //     powerup.active && <PowerUpItem key={index} powerup={powerup} />
-    //   ))}
-    //   {gameOver && (
-    //     <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-75">
-    //       <div className="text-white text-center">
-    //         <h2 className="text-4xl font-bold mb-4">Game Over</h2>
-    //         <p className="text-2xl">Final Score: {score}</p>
-    //         <button
-    //           className="bg-blue-500 text-white px-4 py-2 rounded"
-    //           onClick={handleLeaderboard}
-    //         >
-    //           View Leaderboard
-    //         </button>
-    //       </div>
-    //     </div>
-    //   )}
-    //   {showLeaderboard && (
-    //     <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-75 flex items-center justify-center">
-    //       <div className="text-white text-center">
-    //         <h2 className="text-4xl font-bold mb-4">Leaderboard</h2>
-    //         <ul className="list-none">
-    //           {leaderboard.map((entry, index) => (
-    //             <li key={index} className="mb-2 text-lg">{`${index + 1}. ${entry.username} - ${entry.highestScore}`}</li>
-    //           ))}
-    //         </ul>
-    //         <button
-    //           className="bg-red-500 text-white px-4 py-2 rounded mt-4"
-    //           onClick={() => setShowLeaderboard(false)}
-    //         >
-    //           Close
-    //         </button>
-    //       </div>
-    //     </div>
-    //   )}
-    // </div>
     <div className="w-full h-screen overflow-hidden relative">
   {/* Video Background */}
   <video
@@ -262,10 +204,8 @@ export const Game: React.FC = () => {
     Your browser does not support the video tag.
   </video>
 
-  {/* Dark Overlay (Optional, for better visibility of game elements) */}
   <div className="absolute inset-0 bg-black bg-opacity-50"></div>
 
-  {/* Game HUD and Elements */}
   <GameHUD score={score} lives={ship.lives} wave={wave} />
   <WaveAnnouncement wave={wave} visible={showAnnouncement} />
   <Spaceship ship={ship} />
