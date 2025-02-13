@@ -2,7 +2,7 @@ import React, { useState, useEffect} from 'react';
 import './lexiquest.css';
 import words from '../assets/words.txt?raw';
 import Modal from './ModalLexi';
-import lexi from "../assets/newdes2.mp4"
+import lexi from "../assets/newdes.mp4"
 import axios from 'axios'; // Import axios for API calls
 
 const getDailySeed = () => {
