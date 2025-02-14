@@ -5,23 +5,31 @@ const GameOptions = () => {
   const navigate = useNavigate();
 
   return (
+
     <div style={styles.container}>
+
       <h1 style={styles.heading}>Choose a Mode for Nine Men Morris</h1>
+
       <div style={styles.buttonContainer}>
+
         <button
           style={styles.button}
           onClick={() => navigate('/games/ninemenmorris')}
         >
           Play with Computer
         </button>
+
         <button
           style={styles.button}
           onClick={() => navigate('/games/ninemenmorris/friends')}
         >
           Play with Friends
         </button>
+
       </div>
+
     </div>
+
   );
 };
 
@@ -34,6 +42,7 @@ const styles = {
     height: '100vh',
     textAlign: 'center',
     color: 'white',
+    backgroundColor: 'black',
   },
   heading: {
     fontSize: '2.5rem',
