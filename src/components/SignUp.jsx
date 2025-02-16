@@ -16,27 +16,6 @@ function Signup() {
 
   const navigate = useNavigate();
 
-  // const validateForm = () => {
-  //   const newErrors = {};
-
-  //   if (!formData.username.trim()) newErrors.username = "Username is required.";
-  //   if (!formData.email.trim()) {
-  //     newErrors.email = "Email is required.";
-  //   } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-  //     newErrors.email = "Email is not valid.";
-  //   }
-  //   if (!formData.password) {
-  //     newErrors.password = "Password is required.";
-  //   } else if (formData.password.length < 8) {
-  //     newErrors.password = "Password must be at least 8 characters.";
-  //   }
-  //   if (formData.password !== formData.confirmPassword) {
-  //     newErrors.confirmPassword = "Passwords do not match.";
-  //   }
-
-  //   setErrors(newErrors);
-  //   return Object.keys(newErrors).length === 0;
-  // };
   const validateForm = () => {
   const newErrors = {};
 
