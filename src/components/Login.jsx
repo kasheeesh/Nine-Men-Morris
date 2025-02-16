@@ -80,14 +80,15 @@ function Login() {
   };
 
   return (
+    <div className="login-page">
     <div className="login-container">
       <form className="login-form" onSubmit={handleSubmit}>
-        <h2>Login</h2>
+        <h2>Welcome Back</h2>
 
         {successMessage && <p className="success-message">{successMessage}</p>}
         {errorMessage && <p className="error-message">{errorMessage}</p>}
 
-        <div className="form-group">
+        <div className="login-form-group">
           <label>Email</label>
           <input
             type="email"
@@ -99,7 +100,7 @@ function Login() {
           {errors.email && <span className="error">{errors.email}</span>}
         </div>
 
-        <div className="form-group">
+        <div className="login-form-group">
           <label>Password</label>
           <input
             type="password"
@@ -115,6 +116,7 @@ function Login() {
           Login
         </button>
       </form>
+    </div>
     </div>
   );
 }

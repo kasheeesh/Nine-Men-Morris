@@ -96,9 +96,10 @@ function Signup() {
   };
 
   return (
+    <div className="signup-page">
     <div className="signup-container">
       <form className="signup-form" onSubmit={handleSubmit}>
-        <h2>Create an Account</h2>
+        <h2>Get Started</h2>
 
         {successMessage && <p className="success-message">{successMessage}</p>}
         {errorMessage && <p className="error-message">{errorMessage}</p>}
@@ -154,9 +155,10 @@ function Signup() {
         </div>
 
         <button type="submit" className="signup-button">
-          Signup
+          Sign Up
         </button>
       </form>
+    </div>
     </div>
   );
 }
