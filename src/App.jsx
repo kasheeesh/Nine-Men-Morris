@@ -13,15 +13,12 @@ function App() {
   return (
     <Router>
       <Routes>
-
         <Route path="/" element={<LandingPage />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/games" element={<Games />} />
         <Route path="/games/ninemenmorris/options" element={<GameOptions />} />
         <Route path="/games/ninemenmorris" element={<NineMensMorris />} />
-        {/* <Route path="/games/ninemenmorris" component={NineMenMorris} />
-        <Route path="/games/ninemenmorris/friends" component={NineMenMorrisFriends} /> */}
         <Route path="/games/ninemenmorris/friends" element={<NineMensMorris />} />
         <Route path="/games/lexiquest" element={<Lexi />} />
         <Route path="/games/spaceshooter" element={<Game />} />
