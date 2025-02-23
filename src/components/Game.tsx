@@ -87,30 +87,69 @@ export const Game: React.FC = () => {
   }, [ship, play]);
 
   // Check health and lives
+  // useEffect(() => {
+  //   if (ship.health <= 0 && !gameOver) {
+  //     play('damage');
+  //     const newLives = ship.lives - 1;
+
+  //     if (newLives <= 0) {
+  //       setGameOver(true);
+  //       play('gameOver');
+  //       // Save the score to the backend when the game ends
+  //       const token = localStorage.getItem('token'); // Assuming the JWT token is stored in localStorage
+  //       axios.post('http://localhost:5000/save-score', { score }, {
+  //         headers: { Authorization: `Bearer ${token}` }
+  //       })
+  //       .then(() => console.log('Score saved successfully'))
+  //       .catch(err => console.error('Error saving score:', err));
+  //     } else {
+  //       setShip(prev => ({
+  //         ...prev,
+  //         lives: newLives
+  //       }));
+  //       resetShipState();
+  //     }
+  //   }
+  // }, [ship.health, ship.lives, gameOver, play, resetShipState, score]);
+
   useEffect(() => {
     if (ship.health <= 0 && !gameOver) {
       play('damage');
       const newLives = ship.lives - 1;
-
+  
       if (newLives <= 0) {
         setGameOver(true);
         play('gameOver');
-        // Save the score to the backend when the game ends
-        const token = localStorage.getItem('token'); // Assuming the JWT token is stored in localStorage
-        axios.post('http://localhost:5000/save-score', { score }, {
-          headers: { Authorization: `Bearer ${token}` }
-        })
-        .then(() => console.log('Score saved successfully'))
-        .catch(err => console.error('Error saving score:', err));
+  
+        const token = localStorage.getItem('token'); // JWT token
+  
+        // Define the API request payload
+        const payload = { gameName: "Space Shooter", score };
+  
+        // Perform both API calls
+        axios
+          .post('http://localhost:5000/save-score', {score}, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .then(() => console.log('Score saved successfully'))
+          .catch((err) => console.error('Error saving score:', err));
+  
+        axios
+          .post('http://localhost:5000/update-game-stats', payload, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .then(() => console.log('Game stats updated successfully'))
+          .catch((err) => console.error('Error updating game stats:', err));
       } else {
-        setShip(prev => ({
+        setShip((prev) => ({
           ...prev,
-          lives: newLives
+          lives: newLives,
         }));
         resetShipState();
       }
     }
   }, [ship.health, ship.lives, gameOver, play, resetShipState, score]);
+  
 
   // Game loop
   useGameLoop(useCallback(() => {

@@ -128,19 +128,32 @@ const Game = () => {
   };
 
   
-  const isGameOver = () =>{
-    if(currentRow >=5){
+  const isGameOver = () => {
+    if (currentRow >= 5) {
       const token = localStorage.getItem('token');
       console.log(totalScore);
+  
+      const payload = { gameName: "LexiQuest", score: totalScore };
+  
+      // Save score API call
       axios.post('http://localhost:5000/save-score-lexi', { totalScore }, {
           headers: { Authorization: `Bearer ${token}` }
         })
         .then(() => console.log('Score saved successfully'))
         .catch(err => console.error('Error saving score:', err));
+  
+      // Update game stats API call
+      axios.post('http://localhost:5000/update-game-stats', payload, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(() => console.log('Game stats updated successfully'))
+        .catch(err => console.error('Error updating game stats:', err));
+  
       setGameOver(true);
       return;
     }
-  }
+  };
+  
   const handleLeaderboard = () => {
     axios.get('http://localhost:5000/leaderboardlexi')
       .then(response => {
