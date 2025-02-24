@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { RefreshCw, Lightbulb ,AlertTriangle } from 'lucide-react';
 // Previous type definitions and utility functions remain the same
 import videoBg from "../assets/minesweep.mp4";
+import axios from 'axios';
 enum Difficulty {
   BEGINNER = 'beginner',
   INTERMEDIATE = 'intermediate',
@@ -225,6 +226,64 @@ const MiniSweeper = () => {
       setGameStatus(GameStatus.WON);
     }
   }, [board, gameStatus, firstClick, config]);
+
+const recordGamePlayed = useCallback(async () => {
+  try {
+    console.log("Recording MiniSweeper game played..."); // Add logging to verify function is called
+    
+    // Get the authentication token from localStorage
+    const token = localStorage.getItem('token'); // Changed from 'auth_token' to 'token' to match your working example
+    
+    if (!token) {
+      console.error('No authentication token available');
+      return;
+    }
+    
+    // Make the API call to record game - using axios like in your working example
+    // Also adding the full URL including localhost:5000
+    axios.post('http://localhost:5000/handle-game-over', 
+      { 
+        gameName: 'MiniSweeper'
+        // No score needed for MiniSweeper
+      },
+      { 
+        headers: { 
+          Authorization: `Bearer ${token}` 
+        } 
+      }
+    )
+    .then(response => {
+      console.log("Game recorded successfully:", response.data);
+    })
+    .catch(error => {
+      console.error('Error recording game played:', error);
+    });
+    
+  } catch (error) {
+    console.error('Error in recordGamePlayed function:', error);
+  }
+}, []);
+
+// Fix the useEffect hook to ensure recordGamePlayed is called correctly
+useEffect(() => {
+  let timer: number | undefined;
+  
+  if (gameStatus === GameStatus.PLAYING && !firstClick) {
+    // Game is in progress, start timer
+    timer = window.setInterval(() => {
+      setTime(prev => prev + 1);
+    }, 1000);
+  } else if ((gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST) && !firstClick) {
+    // Game has ended and wasn't the first click (valid game)
+    console.log(`Game ended with status: ${gameStatus}`);
+    recordGamePlayed();
+  }
+  
+  // Cleanup function
+  return () => {
+    if (timer) clearInterval(timer);
+  };
+}, [gameStatus, firstClick, recordGamePlayed]);
 
   const handleRightClick = useCallback((row: number, col: number) => {
     if (gameStatus !== GameStatus.PLAYING || board[row][col].isRevealed) return;
