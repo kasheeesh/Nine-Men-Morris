@@ -86,31 +86,7 @@ export const Game: React.FC = () => {
     return () => window.removeEventListener('click', handleClick);
   }, [ship, play]);
 
-  // Check health and lives
-  // useEffect(() => {
-  //   if (ship.health <= 0 && !gameOver) {
-  //     play('damage');
-  //     const newLives = ship.lives - 1;
 
-  //     if (newLives <= 0) {
-  //       setGameOver(true);
-  //       play('gameOver');
-  //       // Save the score to the backend when the game ends
-  //       const token = localStorage.getItem('token'); // Assuming the JWT token is stored in localStorage
-  //       axios.post('http://localhost:5000/save-score', { score }, {
-  //         headers: { Authorization: `Bearer ${token}` }
-  //       })
-  //       .then(() => console.log('Score saved successfully'))
-  //       .catch(err => console.error('Error saving score:', err));
-  //     } else {
-  //       setShip(prev => ({
-  //         ...prev,
-  //         lives: newLives
-  //       }));
-  //       resetShipState();
-  //     }
-  //   }
-  // }, [ship.health, ship.lives, gameOver, play, resetShipState, score]);
 
   useEffect(() => {
     if (ship.health <= 0 && !gameOver) {
@@ -121,25 +97,23 @@ export const Game: React.FC = () => {
         setGameOver(true);
         play('gameOver');
   
-        const token = localStorage.getItem('token'); // JWT token
+        const token = localStorage.getItem('token');
   
-        // Define the API request payload
-        const payload = { gameName: "Space Shooter", score };
-  
-        // Perform both API calls
+        // Use the unified endpoint for Space Shooter
         axios
-          .post('http://localhost:5000/save-score', {score}, {
-            headers: { Authorization: `Bearer ${token}` },
+          .post('http://localhost:5000/handle-game-over', 
+            { 
+              score: score,
+              gameName: "Space Shooter" 
+            }, 
+            { headers: { Authorization: `Bearer ${token}` } }
+          )
+          .then(response => {
+            console.log('Game over sequence completed successfully:', response.data);
           })
-          .then(() => console.log('Score saved successfully'))
-          .catch((err) => console.error('Error saving score:', err));
-  
-        axios
-          .post('http://localhost:5000/update-game-stats', payload, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-          .then(() => console.log('Game stats updated successfully'))
-          .catch((err) => console.error('Error updating game stats:', err));
+          .catch(err => {
+            console.error('Error in game over sequence:', err);
+          });
       } else {
         setShip((prev) => ({
           ...prev,
