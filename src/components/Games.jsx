@@ -19,50 +19,44 @@ const GameRedirector = () => {
       link: '/games/lexiquest',
     },
     {
-      name :'MiniSweeper',
+      name: 'MiniSweeper',
       link: '/games/minisweeper',
     }
   ];
 
   return (
-    
     <div style={styles.container}>
-
       <video autoPlay loop muted style={styles.video}>
-
         <source src={gamespg} type="video/mp4" />
         Your browser does not support the video tag.
-
       </video>
 
-      <div style={styles.overlay}>
+      {/* Profile icon for dashboard navigation */}
+      <div style={styles.profileIconContainer} onClick={() => navigate('/games/dashboard')}>
+        <div style={styles.profileIcon}>
+          <i className="fas fa-user"></i>
+        </div>
+        <span style={styles.profileText}>Dashboard</span>
+      </div>
 
+      <div style={styles.overlay}>
         <h1 style={styles.heading}>Welcome to the Infinity Arcade</h1>
         <p style={styles.description}>Choose a game to play and have fun!</p>
 
         <div style={styles.buttonContainer}>
-
           {games.map((game, index) => (
-
             <div key={index} style={styles.gameContainer}>
-
-                <button
-                  style={styles.button}
-                  onClick={() => navigate(game.link)}
-                >
-                  {game.name}
-                </button>
-
+              <button
+                style={styles.button}
+                onClick={() => navigate(game.link)}
+              >
+                {game.name}
+              </button>
             </div>
-
           ))}
-
         </div>
-
       </div>
-
     </div>
-
   );
 };
 
@@ -120,13 +114,50 @@ const styles = {
   gameContainer: {
     marginBottom: '2rem',
   },
+  profileIconContainer: {
+    position: 'absolute',
+    top: '20px',
+    right: '20px',
+    display: 'flex',
+    alignItems: 'center',
+    cursor: 'pointer',
+    zIndex: 10,
+    backgroundColor: 'rgba(97, 218, 251, 0.8)',
+    padding: '8px 15px',
+    borderRadius: '20px',
+    transition: 'transform 0.2s, background-color 0.2s',
+  },
+  profileIcon: {
+    width: '30px',
+    height: '30px',
+    borderRadius: '50%',
+    backgroundColor: '#fff',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: '8px',
+    color: '#282c34',
+    fontSize: '16px',
+  },
+  profileText: {
+    color: '#282c34',
+    fontWeight: 'bold',
+  }
 };
-const buttonHoverStyle = document.createElement('style');
-buttonHoverStyle.innerHTML = `
+
+// Add hover styles
+const additionalStyles = document.createElement('style');
+additionalStyles.innerHTML = `
   button:hover {
     background-color: #21a1f1;
     transform: scale(1.05);
   }
+  
+  [style*="profileIconContainer"]:hover {
+    background-color: #21a1f1;
+    transform: scale(1.05);
+  }
 `;
-document.head.appendChild(buttonHoverStyle);
+document.head.appendChild(additionalStyles);
+
 export default GameRedirector;
