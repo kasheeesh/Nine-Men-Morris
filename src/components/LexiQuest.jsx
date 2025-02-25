@@ -4,6 +4,8 @@ import words from '../assets/words.txt?raw';
 import Modal from './ModalLexi';
 import lexi from "../assets/newdes.mp4"
 import axios from 'axios'; // Import axios for API calls
+import Button64 from './BackButton';
+import './BackButton.css';
 
 const getDailySeed = () => {
   const today = new Date();
@@ -213,6 +215,7 @@ useEffect(() => {
 
   return (
     <div className='game-containerk'>
+      <Button64/>
       <video autoPlay loop muted className="background-video">
               <source src={lexi} type="video/mp4" />
               Your browser does not support the video tag.

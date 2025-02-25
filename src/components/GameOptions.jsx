@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+
 const GameOptions = () => {
   const navigate = useNavigate();
 
@@ -14,7 +15,7 @@ const GameOptions = () => {
 
         <button
           style={styles.button}
-          onClick={() => navigate('/games/ninemenmorris')}
+          onClick={() => navigate('/games/ninemenmorris/')}
         >
           Play with Computer
         </button>

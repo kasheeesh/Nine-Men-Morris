@@ -12,6 +12,7 @@ body{
     width: 100vw;
     height: 100vh;
     overflow: hidden;
+    
 }
 
 .background-video {
@@ -27,13 +28,16 @@ body{
 .game-content {
     position: relative;
     z-index: 1;
+    
 }
 .grid {
     display: grid;
     gap: 10px;
     margin-left: 580px;
-    margin-bottom: 20px;
-    margin-top:30px;
+    margin-right: auto;
+    /* margin-bottom: 20px; */
+    /* margin-top:30px; */
+    /* margin-bottom: 50px; */
 }
 .submitbutt{
     color:black;
@@ -111,7 +115,7 @@ body{
     align-items: center;
     gap: 10px;
     /* Space between row and score box */
-    margin-bottom: 10px;
+    
 }
 
 .score-box {
@@ -149,6 +153,7 @@ body{
         text-align: center;
         margin-left: auto;
         margin-right: 597px;
+        margin-bottom: 20px;
 
 }
 /* Modal overlay (background) */

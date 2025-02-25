@@ -11,8 +11,11 @@ import { GAME_CONFIG } from '../constants/gameConfig';
 import { updateMeteorites, updatePowerups, createMeteorite, createPowerup, checkGameCollisions } from '../utils/gameLogic';
 import { createBullets, updateBullets } from '../utils/bulletUtils';
 import type { Spaceship as SpaceshipType, Bullet, Meteorite as MeteoriteType, PowerUp } from '../types/game';
-import sp from "../assets/sp.mp4"
+import sp from "../assets/sp.mp4";
 import axios from 'axios'; // Import axios for API calls
+import ArrowButton from "../components/BackButton";
+
+
 
 const INITIAL_SHIP: SpaceshipType = {
   x: window.innerWidth / 2,
@@ -203,10 +206,12 @@ export const Game: React.FC = () => {
     <source src={sp} type="video/mp4" />
     Your browser does not support the video tag.
   </video>
-
+  
   <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-
+  <div className='score-back'>
   <GameHUD score={score} lives={ship.lives} wave={wave} />
+  <ArrowButton/>
+  </div>
   <WaveAnnouncement wave={wave} visible={showAnnouncement} />
   <Spaceship ship={ship} />
   {meteorites.map((meteorite, index) => (
