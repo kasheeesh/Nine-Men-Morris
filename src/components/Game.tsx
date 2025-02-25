@@ -89,31 +89,44 @@ export const Game: React.FC = () => {
     return () => window.removeEventListener('click', handleClick);
   }, [ship, play]);
 
-  // Check health and lives
+
+
   useEffect(() => {
     if (ship.health <= 0 && !gameOver) {
       play('damage');
       const newLives = ship.lives - 1;
-
+  
       if (newLives <= 0) {
         setGameOver(true);
         play('gameOver');
-        // Save the score to the backend when the game ends
-        const token = localStorage.getItem('token'); // Assuming the JWT token is stored in localStorage
-        axios.post('http://localhost:5000/save-score', { score }, {
-          headers: { Authorization: `Bearer ${token}` }
-        })
-        .then(() => console.log('Score saved successfully'))
-        .catch(err => console.error('Error saving score:', err));
+  
+        const token = localStorage.getItem('token');
+  
+        // Use the unified endpoint for Space Shooter
+        axios
+          .post('http://localhost:5000/handle-game-over', 
+            { 
+              score: score,
+              gameName: "Space Shooter" 
+            }, 
+            { headers: { Authorization: `Bearer ${token}` } }
+          )
+          .then(response => {
+            console.log('Game over sequence completed successfully:', response.data);
+          })
+          .catch(err => {
+            console.error('Error in game over sequence:', err);
+          });
       } else {
-        setShip(prev => ({
+        setShip((prev) => ({
           ...prev,
-          lives: newLives
+          lives: newLives,
         }));
         resetShipState();
       }
     }
   }, [ship.health, ship.lives, gameOver, play, resetShipState, score]);
+  
 
   // Game loop
   useGameLoop(useCallback(() => {

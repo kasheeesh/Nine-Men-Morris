@@ -8,6 +8,7 @@ import Signup from './components/SignUp';
 import Login from './components/Login';
 import GameOptions from './components/GameOptions';
 import MiniSweeper from './components/MiniSweeper';
+import Dashboard from './components/Dashboard';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/games" element={<Games />} />
+        <Route path="/games/dashboard" element={<Dashboard />} />
         <Route path="/games/ninemenmorris/options" element={<GameOptions />} />
         <Route path="/games/ninemenmorris" element={<NineMensMorris />} />
         <Route path="/games/ninemenmorris/friends" element={<NineMensMorris />} />

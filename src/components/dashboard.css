@@ -1,0 +1,132 @@
+body {
+    background-color: #f5f7fa;
+    color: #333;
+}
+
+/* Grid Layout Improvements */
+.grid.grid-cols-1.lg\:grid-cols-12.gap-6 {
+    gap: 2rem !important;
+}
+
+.lg\:col-span-4 {
+    grid-column: span 4 / span 4;
+}
+
+.lg\:col-span-5 {
+    grid-column: span 5 / span 5;
+}
+
+.lg\:col-span-3 {
+    grid-column: span 3 / span 3;
+}
+
+@media (max-width: 1024px) {
+    .lg\:col-span-4,
+    .lg\:col-span-5,
+    .lg\:col-span-3 {
+        grid-column: span 12 / span 12;
+    }
+}
+
+/* Heatmap Styling */
+.react-calendar-heatmap {
+    margin: 0 auto;
+    padding: 1rem 0;
+    max-width: 100%;
+}
+
+.react-calendar-heatmap-month-label {
+    fill: #4a5568;
+    font-size: 12px;
+    font-weight: 600;
+    text-anchor: start;
+}
+
+.react-calendar-heatmap .color-empty {
+    fill: #ebedf0;
+    rx: 3px;
+    ry: 3px;
+    stroke: #fff;
+    stroke-width: 1px;
+}
+
+.react-calendar-heatmap .color-scale-1 { fill: #c6e48b; }
+.react-calendar-heatmap .color-scale-2 { fill: #7bc96f; }
+.react-calendar-heatmap .color-scale-3 { fill: #239a3b; }
+.react-calendar-heatmap .color-scale-4 { fill: #196127; }
+
+.react-calendar-heatmap rect:hover {
+    stroke: #fff;
+    stroke-width: 1px;
+}
+
+/* Card Styling */
+.bg-white {
+    border-radius: 12px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+    transition: transform 0.2s, box-shadow 0.2s !important;
+}
+
+.bg-white:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Profile Avatar */
+.w-20.h-20.bg-blue-500 {
+    background: linear-gradient(135deg, #4776E6, #8E54E9) !important;
+    box-shadow: 0 5px 15px rgba(71, 118, 230, 0.2);
+}
+
+/* Button Styling */
+button.w-full.py-2.bg-blue-500 {
+    background: linear-gradient(135deg, #4776E6, #8E54E9) !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 10px rgba(71, 118, 230, 0.2);
+    transition: all 0.2s ease;
+}
+
+button.w-full.py-2.bg-blue-500:hover {
+    box-shadow: 0 6px 15px rgba(71, 118, 230, 0.3);
+    transform: translateY(-2px);
+}
+
+/* Stats Cards */
+.bg-gray-50.p-3.rounded {
+    background-color: #f8fafc !important;
+    border-radius: 10px !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+}
+
+/* Text Styling */
+.text-lg.font-bold.text-blue-600 {
+    color: #3182ce !important;
+}
+
+.text-3xl.font-bold.text-gray-800 {
+    color: #2d3748 !important;
+    letter-spacing: -0.5px;
+}
+
+.text-xl.font-semibold.mb-4.text-gray-800 {
+    border-bottom: 2px solid #edf2f7;
+    padding-bottom: 10px;
+}
+
+/* Responsive Heatmap */
+@media (max-width: 768px) {
+    .calendar-heatmap {
+        overflow-x: auto;
+    }
+    
+    .react-calendar-heatmap {
+        min-width: 600px;
+    }
+    
+    .flex.justify-between.items-center.mb-4 {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+}

@@ -129,20 +129,43 @@ const Game = () => {
     }
   };
 
-  
-  const isGameOver = () =>{
-    if(currentRow >=5){
+  const isGameOver = async () => {
+    if (currentRow >= 5) {
+      setGameOver(true); // Set the game over state
       const token = localStorage.getItem('token');
-      console.log(totalScore);
-      axios.post('http://localhost:5000/save-score-lexi', { totalScore }, {
-          headers: { Authorization: `Bearer ${token}` }
-        })
-        .then(() => console.log('Score saved successfully'))
-        .catch(err => console.error('Error saving score:', err));
-      setGameOver(true);
-      return;
+    
+      console.log("Total score:", totalScore);
+    
+      try {
+        // Use the unified endpoint for LexiQuest
+        console.log("Handling game over sequence...");
+        const gameOverResponse = await axios.post(
+          'http://localhost:5000/handle-game-over', 
+          { 
+            score: totalScore,
+            gameName: "LexiQuest"
+          }, 
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        
+        console.log('Game over sequence completed:', gameOverResponse.data);
+        
+        // Set the leaderboard from the response
+        if (gameOverResponse.data.leaderboard) {
+          setLeaderboard(gameOverResponse.data.leaderboard);
+        } else {
+          // If the response doesn't include the leaderboard, fetch it separately
+          const leaderboardResponse = await axios.get('http://localhost:5000/leaderboardlexi');
+          setLeaderboard(leaderboardResponse.data);
+        }
+      } catch (err) {
+        console.error('Error during game over sequence:', err);
+        // Show error to user
+      }
+      return; // Stop further execution
     }
-  }
+  };
+  
   const handleLeaderboard = () => {
     axios.get('http://localhost:5000/leaderboardlexi')
       .then(response => {
