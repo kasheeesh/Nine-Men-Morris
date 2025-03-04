@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { RefreshCw, Lightbulb ,AlertTriangle } from 'lucide-react';
 // Previous type definitions and utility functions remain the same
 import videoBg from "../assets/minesweep.mp4";
+import BackButton from "./BackButton.jsx";
 import axios from 'axios';
 enum Difficulty {
   BEGINNER = 'beginner',
@@ -317,7 +318,9 @@ useEffect(() => {
   
  
   return (
+    
 <div className="min-h-screen bg-black relative flex items-center justify-center">
+   
       {/* Background Video */}
       <video
         autoPlay
@@ -326,13 +329,20 @@ useEffect(() => {
         playsInline
         className="absolute inset-0 w-full h-full object-cover"
       >
+        
+        
   <source src={videoBg} type="video/mp4" />
-      </video>   
-       <div className="p-8 rounded-xl shadow-[0_0_20px_rgba(123,31,162,0.5)] bg-black border-4 border-purple-600">
+      </video>  
+     
+      
+       <div className=" rounded-xl shadow-[0_0_20px_rgba(123,31,162,0.5)] bg-black border-4 border-purple-600">
+           <BackButton className="absolute top-4 left-4" />
         <div className="relative">
+          
           <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent via-purple-500/5 to-transparent animate-scan" />
           
           <div className="mb-4 space-y-4">
+            
             {/* Difficulty buttons */}
             <div className="flex justify-center space-x-4">
               {Object.values(Difficulty).map((d) => (
@@ -349,6 +359,7 @@ useEffect(() => {
                 </button>
               ))}
             </div>
+            
 
             {/* Game stats and controls */}
             <div className="flex justify-between items-center px-4 py-2 bg-purple-900/50 rounded-lg border-2 border-purple-700">
@@ -441,6 +452,7 @@ useEffect(() => {
         </div>
       </div>
     </div>
+   
   );
 };
 
@@ -479,6 +491,7 @@ const Cell = ({ cell, onClick, onRightClick }) => (
             ? '⚠️'
             : ''}
   </button>
+  
 );
 
 export default MiniSweeper;

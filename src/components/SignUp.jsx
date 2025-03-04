@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Signup.css";
+import BackButton from './BackButton';
 
 function Signup() {
   const [formData, setFormData] = useState({
@@ -96,6 +97,8 @@ function Signup() {
   };
 
   return (
+    <>
+    <BackButton/>
     <div className="signup-page">
     <div className="signup-container">
       <form className="signup-form" onSubmit={handleSubmit}>
@@ -160,6 +163,7 @@ function Signup() {
       </form>
     </div>
     </div>
+    </>
   );
 }
 

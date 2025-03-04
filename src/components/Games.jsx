@@ -1,6 +1,8 @@
 import React from 'react';
 import gamespg from "../assets/gamespg.mp4";
 import { useNavigate } from 'react-router-dom';
+import BackButton from "./BackButton";
+import Logout from './Logout';
 
 const GameRedirector = () => {
   const navigate = useNavigate();
@@ -25,7 +27,10 @@ const GameRedirector = () => {
   ];
 
   return (
+    <>
+
     <div style={styles.container}>
+      <BackButton/>
       <video autoPlay loop muted style={styles.video}>
         <source src={gamespg} type="video/mp4" />
         Your browser does not support the video tag.
@@ -55,14 +60,25 @@ const GameRedirector = () => {
             </div>
           ))}
         </div>
+        
+      
       </div>
+      
+       
     </div>
+    <div className="flex justify-end mt-[-60px] mb-8 mr-12">
+  <Logout />
+</div>
+
+    
+    
+    </>
   );
 };
 
 const styles = {
   container: {
-    position: 'relative',
+    // position: 'relative',
     width: '100%',
     height: '100vh',
     overflow: 'hidden',
@@ -81,7 +97,8 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
+    // justifyContent: 'center',
+    marginTop:'3rem',
     height: '100%',
     color: 'white',
     textAlign: 'center',
@@ -96,9 +113,9 @@ const styles = {
     marginBottom: '2rem',
   },
   buttonContainer: {
+    gap:'1rem',
     display: 'flex',
     flexDirection: 'column',
-    gap: '1rem',
   },
   button: {
     padding: '1rem 2rem',
@@ -112,7 +129,7 @@ const styles = {
     transition: 'transform 0.2s, background-color 0.2s',
   },
   gameContainer: {
-    marginBottom: '2rem',
+    marginBottom: '1rem',
   },
   profileIconContainer: {
     position: 'absolute',

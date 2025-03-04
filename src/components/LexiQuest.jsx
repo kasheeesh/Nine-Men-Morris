@@ -6,6 +6,7 @@ import lexi from "../assets/newdes.mp4"
 import axios from 'axios'; // Import axios for API calls
 import Button64 from './BackButton';
 import './BackButton.css';
+import Logout from './Logout';
 
 const getDailySeed = () => {
   const today = new Date();
@@ -238,7 +239,10 @@ useEffect(() => {
 
   return (
     <div className='game-containerk'>
+      <div className='flex justify-between mt-2 mr-2'>
       <Button64/>
+      <Logout/>
+      </div>
       <video autoPlay loop muted className="background-video">
               <source src={lexi} type="video/mp4" />
               Your browser does not support the video tag.

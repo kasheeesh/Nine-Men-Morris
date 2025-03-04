@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import BackButton from './BackButton';
 
 import "./Login.css";
 
@@ -80,8 +81,12 @@ function Login() {
   };
 
   return (
+    <>
+    <BackButton/>
     <div className="login-page">
+       
     <div className="login-container">
+      
       <form className="login-form" onSubmit={handleSubmit}>
         <h2>Welcome Back</h2>
 
@@ -118,6 +123,8 @@ function Login() {
       </form>
     </div>
     </div>
+    </>
+  
   );
 }
 
