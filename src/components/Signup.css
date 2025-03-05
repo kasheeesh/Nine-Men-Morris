@@ -10,6 +10,12 @@
     justify-content: center;
     align-items: center;
 } */
+  body {
+      /* background-image: url("C:/Users/kashi/Desktop/nine-men-morris/nineMenMorris/src/assets/nmm.jpg"); */
+      background: url("C:/Users/kashi/Desktop/nine-men-morris/nineMenMorris/src/assets/purple.png");
+      /* background-color: black; */
+
+  }
 
 /* Center the signup container */
 .signup-container {
