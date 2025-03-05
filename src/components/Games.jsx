@@ -66,9 +66,10 @@ const GameRedirector = () => {
       
        
     </div>
-    <div className="flex justify-end mt-[-60px] mb-8 mr-12">
-  <Logout />
-</div>
+    <div className="absolute top-4 right-4 z-10">
+        <Logout />
+      </div>
+{/* </div> */}
 
     
     
