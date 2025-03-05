@@ -1,0 +1,28 @@
+.game-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.game-board {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    background-color: #f8f8f8;
+    border: 2px solid #000;
+}
+
+circle {
+    cursor: pointer;
+    transition: fill 0.3s ease-in-out;
+}
+
+circle:hover {
+    fill: darkgray;
+}

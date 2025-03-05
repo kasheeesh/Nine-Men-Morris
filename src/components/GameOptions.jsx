@@ -15,7 +15,7 @@ const GameOptions = () => {
 
         <button
           style={styles.button}
-          onClick={() => navigate('/games/ninemenmorris/')}
+          onClick={() => navigate('/games/ninemenmorris/computer')}
         >
           Play with Computer
         </button>

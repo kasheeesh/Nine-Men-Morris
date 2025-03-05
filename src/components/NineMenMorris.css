@@ -1,0 +1,13 @@
+.game-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.game-board {
+    width: 400px;
+    height: 400px;
+    background-color: white;
+    display: block;
+    margin: auto;
+}
+
