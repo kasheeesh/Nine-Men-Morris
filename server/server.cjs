@@ -27,6 +27,7 @@ const LEXIQUEST_LEADERBOARD = "leaderboardlexi";
 const GAME_STATS_COLLECTION = "gameStats";
 
 let db;
+const PORT = 5000;
 
 // Connect to MongoDB
 MongoClient.connect(MONGO_URI)
@@ -107,6 +108,11 @@ const authenticateToken = (req, res, next) => {
     return res.status(401).json({ error: "Access denied. No token provided." });
   }
 
+   // Check if token is blacklisted
+   if (blacklistedTokens.has(token)) {
+    return res.status(401).json({ error: "Token is no longer valid." });
+  }
+
   jwt.verify(token, SECRET_KEY, (err, user) => {
     if (err) {
       return res.status(403).json({ error: "Invalid token." });
@@ -116,6 +122,24 @@ const authenticateToken = (req, res, next) => {
     next();
   });
 };
+
+const blacklistedTokens = new Set(); // In-memory token blacklist (consider using Redis in production)
+
+// Logout API
+app.post("/logout", authenticateToken, (req, res) => {
+  try {
+    const token = req.headers["authorization"].split(" ")[1];
+    
+    // Blacklist the token
+    blacklistedTokens.add(token);
+
+    res.status(200).json({ message: "Logout successful!" });
+  } catch (err) {
+    console.error("Logout error:", err);
+    res.status(500).json({ error: "Internal server error during logout." });
+  }
+});
+
 
 // Add this to your server.cjs file
 
@@ -491,4 +515,3 @@ app.get("/player-rank", authenticateToken, async (req, res) => {
   }
 });
 
-const PORT = 5000;
