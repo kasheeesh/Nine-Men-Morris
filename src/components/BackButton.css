@@ -6,7 +6,7 @@
     margin: 0;
     overflow: hidden;
     outline: none;
-    background-color: transparent;
+    background-color: black;
     cursor: pointer;
     border: 0;
 }
@@ -74,4 +74,7 @@
 .styled-wrapper .button:focus .button-box {
     transition: 0.4s;
     transform: translateX(-69px);
+}
+.styled-wrapper{
+    background-color: black;
 }
