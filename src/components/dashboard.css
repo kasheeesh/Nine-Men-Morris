@@ -1,132 +1,373 @@
 body {
-    background-color: #f5f7fa;
-    color: #333;
-}
-
-/* Grid Layout Improvements */
-.grid.grid-cols-1.lg\:grid-cols-12.gap-6 {
-    gap: 2rem !important;
-}
-
-.lg\:col-span-4 {
-    grid-column: span 4 / span 4;
-}
-
-.lg\:col-span-5 {
-    grid-column: span 5 / span 5;
-}
-
-.lg\:col-span-3 {
-    grid-column: span 3 / span 3;
-}
-
-@media (max-width: 1024px) {
+    background-color: #0f0a2a;
+    background-image: 
+      radial-gradient(circle at 10% 20%, rgba(255, 0, 128, 0.1) 0%, transparent 30%),
+      radial-gradient(circle at 90% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 40%);
+    color: #f0f2ff;
+    font-family: 'Exo 2', 'Rajdhani', system-ui, sans-serif;
+    overflow-x: hidden;
+  }
+  
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #182040;
+    border-radius: 5px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #ff2b6d, #3a86ff);
+    border-radius: 5px;
+    border: 2px solid #182040;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(to bottom, #ff0055, #2a75ff);
+  }
+  
+  .text-3xl.font-bold.text-gray-800,
+  .text-xl.font-semibold.text-gray-800 {
+    color: #fff !important;
+    text-shadow: 
+      0 0 5px rgba(255, 70, 140, 0.7),
+      0 0 10px rgba(255, 70, 140, 0.5);
+    letter-spacing: 1px;
+    position: relative;
+  }
+  
+  .text-xl.font-semibold.mb-4.text-gray-800 {
+    border-bottom: none;
+    padding-bottom: 15px;
+    position: relative;
+  }
+  
+  .text-xl.font-semibold.mb-4.text-gray-800::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #ff2b6d, #3a86ff, #33ff8c, #ff2b6d);
+    background-size: 300% 100%;
+    border-radius: 3px;
+    animation: gradientBorder 6s linear infinite;
+  }
+  
+  @keyframes gradientBorder {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 300% 50%; }
+  }
+  
+  /* Main Container */
+  .max-w-7xl.mx-auto.p-6.bg-gray-50.min-h-screen {
+    background-color: rgba(16, 14, 45, 0.85);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    border: 1px solid rgba(70, 126, 255, 0.1);
+    max-width: 1300px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+  }
+  
+  /* Dashboard Header */
+  .mb-8.border-b.pb-4 {
+    border-bottom: 1px solid rgba(70, 126, 255, 0.2);
+    position: relative;
+    padding-bottom: 1.5rem;
+  }
+  
+  .mb-8.border-b.pb-4::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: -5px;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(70, 126, 255, 0.8) 50%, 
+      transparent 100%);
+  }
+  
+  /* Game Cards - Redesigned with arcade feel */
+  .bg-white {
+    background: rgba(30, 20, 70, 0.7) !important;
+    border: 1px solid rgba(70, 126, 255, 0.3);
+    box-shadow: 
+      0 5px 15px rgba(0, 0, 0, 0.3),
+      0 0 20px rgba(70, 126, 255, 0.2) !important;
+    backdrop-filter: blur(4px);
+    transition: all 0.3s ease !important;
+    overflow: hidden;
+    position: relative;
+    margin-left: 0;
+    margin-right: auto;
+  }
+  
+  .bg-white::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: 10px;
+    height: 3px;
+    background: linear-gradient(90deg, 
+      #ff2b6d, 
+      #3a86ff, 
+      #33ff8c);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .bg-white:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 
+      0 8px 25px rgba(0, 0, 0, 0.3),
+      0 0 30px rgba(70, 126, 255, 0.3) !important;
+  }
+  
+  .bg-white:hover::before {
+    opacity: 1;
+  }
+  
+  /* Profile Card Styling */
+  .lg\:col-span-4.bg-white {
+    background: linear-gradient(135deg, rgba(30, 20, 70, 0.8), rgba(25, 15, 60, 0.8)) !important;
+  }
+  
+  /* Profile Avatar */
+  .w-20.h-20.bg-blue-500 {
+    background: conic-gradient(from 0deg, #ff2b6d, #3a86ff, #33ff8c, #ff2b6d) !important;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    box-shadow: 
+      0 0 15px rgba(255, 70, 140, 0.5),
+      0 0 30px rgba(70, 126, 255, 0.3);
+    animation: avatarPulse 3s ease-in-out infinite;
+  }
+  
+  @keyframes avatarPulse {
+    0%, 100% { 
+      box-shadow: 
+        0 0 15px rgba(255, 70, 140, 0.5),
+        0 0 30px rgba(70, 126, 255, 0.3);
+    }
+    50% { 
+      box-shadow: 
+        0 0 25px rgba(255, 70, 140, 0.7),
+        0 0 40px rgba(70, 126, 255, 0.5);
+    }
+  }
+  
+  /* Button Styling */
+  button.w-full.py-2.bg-blue-500 {
+    background: linear-gradient(90deg, #ff2b6d, #3a86ff) !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    border: none;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(58, 134, 255, 0.4);
+    transition: all 0.3s ease;
+    z-index: 1;
+  }
+  
+  button.w-full.py-2.bg-blue-500::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: all 0.5s ease;
+    z-index: -1;
+  }
+  
+  button.w-full.py-2.bg-blue-500:hover {
+    box-shadow: 0 7px 20px rgba(58, 134, 255, 0.6);
+    transform: translateY(-3px);
+  }
+  
+  button.w-full.py-2.bg-blue-500:hover::before {
+    left: 100%;
+  }
+  
+  button.w-full.py-2.bg-blue-500:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 10px rgba(58, 134, 255, 0.4);
+  }
+  
+  /* Statistics Cards */
+  .bg-gray-50.p-3.rounded {
+    background-color: rgba(40, 30, 90, 0.4) !important;
+    border: 1px solid rgba(70, 126, 255, 0.2);
+    border-radius: 10px !important;
+    transition: all 0.2s ease;
+  }
+  
+  .bg-gray-50.p-3.rounded:hover {
+    background-color: rgba(50, 40, 110, 0.5) !important;
+    border-color: rgba(70, 126, 255, 0.3);
+    transform: translateX(5px);
+  }
+  
+  /* Text Styling */
+  .text-lg.font-bold.text-blue-600 {
+    color: #3a86ff !important;
+    text-shadow: 0 0 10px rgba(58, 134, 255, 0.5);
+  }
+  
+  .text-gray-600 {
+    color: #a4b8ff !important;
+  }
+  
+  .text-gray-700 {
+    color: #c9d8ff !important;
+  }
+  
+  /* Bar Chart Styling */
+  .recharts-bar-rectangle {
+    filter: drop-shadow(0 0 6px rgba(76, 175, 80, 0.5));
+  }
+  
+  /* Custom game colors - using proper CSS */
+  .recharts-bar-rectangle[name="Space Shooter"] path {
+    fill: #00f260 !important;
+  }
+  
+  .recharts-bar-rectangle[name="MiniSweeper"] path {
+    fill: #4facfe !important;
+  }
+  
+  .recharts-bar-rectangle[name="LexiQuest"] path {
+    fill: #f83600 !important;
+  }
+  
+  .recharts-bar-rectangle[name="Snake"] path {
+    fill: #8e2de2 !important;
+  }
+  
+  /* Heatmap Styling */
+  .react-calendar-heatmap {
+    margin: 1rem auto;
+    padding: 1rem 0;
+    max-width: 100%;
+  }
+  
+  .react-calendar-heatmap-month-label {
+    fill: #a4b8ff;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  
+  .react-calendar-heatmap .color-empty {
+    fill: rgba(40, 30, 90, 0.4);
+    rx: 4px;
+    ry: 4px;
+    stroke: rgba(10, 7, 28, 0.5);
+    stroke-width: 1px;
+  }
+  
+  .react-calendar-heatmap .color-scale-1 { 
+    fill: #673ab7; 
+    rx: 4px;
+    ry: 4px;
+    filter: drop-shadow(0 0 3px rgba(103, 58, 183, 0.3));
+  }
+  
+  .react-calendar-heatmap .color-scale-2 { 
+    fill: #5c6bc0; 
+    rx: 4px;
+    ry: 4px;
+    filter: drop-shadow(0 0 4px rgba(92, 107, 192, 0.4));
+  }
+  
+  .react-calendar-heatmap .color-scale-3 { 
+    fill: #3f51b5; 
+    rx: 4px;
+    ry: 4px;
+    filter: drop-shadow(0 0 5px rgba(63, 81, 181, 0.5));
+  }
+  
+  .react-calendar-heatmap .color-scale-4 { 
+    fill: #283593; 
+    rx: 4px;
+    ry: 4px;
+    filter: drop-shadow(0 0 7px rgba(40, 53, 147, 0.6));
+  }
+  
+  .react-calendar-heatmap rect:hover {
+    stroke: #fff;
+    stroke-width: 2px;
+    filter: brightness(1.2);
+  }
+  
+  /* NEW HORIZONTAL LAYOUT */
+  /* Main grid change to horizontal flow */
+  .grid.grid-cols-1.lg\:grid-cols-12.gap-6 {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+  
+  /* Profile section */
+  .lg\:col-span-4 {
+    flex: 0 0 auto;
+    width: 32%;
+    min-width: 300px;
+    margin-right: 1%;
+  }
+  
+  /* Games Played section */
+  .lg\:col-span-5 {
+    flex: 0 0 auto;
+    width: 32%;
+    min-width: 300px;
+    margin-right: 1%;
+  }
+  
+  /* Rankings section */
+  .lg\:col-span-3 {
+    flex: 0 0 auto;
+    width: 32%;
+    min-width: 300px;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 1200px) {
+    .grid.grid-cols-1.lg\:grid-cols-12.gap-6 {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+    
     .lg\:col-span-4,
     .lg\:col-span-5,
     .lg\:col-span-3 {
-        grid-column: span 12 / span 12;
+      width: 48%;
+      margin-right: 2%;
+      margin-bottom: 1rem;
     }
-}
-
-/* Heatmap Styling */
-.react-calendar-heatmap {
-    margin: 0 auto;
-    padding: 1rem 0;
-    max-width: 100%;
-}
-
-.react-calendar-heatmap-month-label {
-    fill: #4a5568;
-    font-size: 12px;
-    font-weight: 600;
-    text-anchor: start;
-}
-
-.react-calendar-heatmap .color-empty {
-    fill: #ebedf0;
-    rx: 3px;
-    ry: 3px;
-    stroke: #fff;
-    stroke-width: 1px;
-}
-
-.react-calendar-heatmap .color-scale-1 { fill: #c6e48b; }
-.react-calendar-heatmap .color-scale-2 { fill: #7bc96f; }
-.react-calendar-heatmap .color-scale-3 { fill: #239a3b; }
-.react-calendar-heatmap .color-scale-4 { fill: #196127; }
-
-.react-calendar-heatmap rect:hover {
-    stroke: #fff;
-    stroke-width: 1px;
-}
-
-/* Card Styling */
-.bg-white {
-    border-radius: 12px !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
-    transition: transform 0.2s, box-shadow 0.2s !important;
-}
-
-.bg-white:hover {
-    transform: translateY(-3px) !important;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
-}
-
-/* Profile Avatar */
-.w-20.h-20.bg-blue-500 {
-    background: linear-gradient(135deg, #4776E6, #8E54E9) !important;
-    box-shadow: 0 5px 15px rgba(71, 118, 230, 0.2);
-}
-
-/* Button Styling */
-button.w-full.py-2.bg-blue-500 {
-    background: linear-gradient(135deg, #4776E6, #8E54E9) !important;
-    font-weight: 600 !important;
-    border-radius: 8px !important;
-    box-shadow: 0 4px 10px rgba(71, 118, 230, 0.2);
-    transition: all 0.2s ease;
-}
-
-button.w-full.py-2.bg-blue-500:hover {
-    box-shadow: 0 6px 15px rgba(71, 118, 230, 0.3);
-    transform: translateY(-2px);
-}
-
-/* Stats Cards */
-.bg-gray-50.p-3.rounded {
-    background-color: #f8fafc !important;
-    border-radius: 10px !important;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
-}
-
-/* Text Styling */
-.text-lg.font-bold.text-blue-600 {
-    color: #3182ce !important;
-}
-
-.text-3xl.font-bold.text-gray-800 {
-    color: #2d3748 !important;
-    letter-spacing: -0.5px;
-}
-
-.text-xl.font-semibold.mb-4.text-gray-800 {
-    border-bottom: 2px solid #edf2f7;
-    padding-bottom: 10px;
-}
-
-/* Responsive Heatmap */
-@media (max-width: 768px) {
-    .calendar-heatmap {
-        overflow-x: auto;
+  }
+  
+  @media (max-width: 768px) {
+    .grid.grid-cols-1.lg\:grid-cols-12.gap-6 {
+      flex-direction: column;
     }
     
-    .react-calendar-heatmap {
-        min-width: 600px;
+    .lg\:col-span-4,
+    .lg\:col-span-5,
+    .lg\:col-span-3 {
+      width: 100%;
+      margin-right: 0;
+      margin-bottom: 1.5rem;
     }
-    
-    .flex.justify-between.items-center.mb-4 {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-}
+  }

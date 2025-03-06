@@ -4,8 +4,10 @@ import "react-calendar-heatmap/dist/styles.css";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import axios from "axios";
 import "./dashboard.css";
+import BackButton from "./BackButton";
 
 const Dashboard = () => {
+  
   const [stats, setStats] = useState(null);
   const [heatmapData, setHeatmapData] = useState([]);
   const [rankData, setRankData] = useState(null);
@@ -111,9 +113,12 @@ const Dashboard = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-6 bg-gray-50 min-h-screen">
-      <div className="mb-8 border-b pb-4">
-        <h1 className="text-3xl font-bold text-gray-800">Gaming Dashboard</h1>
-        <p className="text-gray-600 mt-2">Track your gaming progress and activity</p>
+      <div className="flex justify-between items-center mb-8 border-b pb-4">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-800">Gaming Dashboard</h1>
+          <p className="text-gray-600 mt-2">Track your gaming progress and activity</p>
+        </div>
+        <BackButton />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
