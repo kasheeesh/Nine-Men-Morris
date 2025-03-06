@@ -1,5 +1,49 @@
 import React, { useState, useEffect } from "react";
 import "./NineMenMorrisAI.css";
+import sww from '../assets/sww.mp4';
+
+// const positions = [
+//     [50, 50], [250, 50], [450, 50],
+//     [50, 250], [450, 250],
+//     [50, 450], [250, 450], [450, 450],
+//     [100, 100], [250, 100], [400, 100],
+//     [100, 250], [400, 250],
+//     [100, 400], [250, 400], [400, 400],
+//     [150, 150], [250, 150], [350, 150],
+//     [150, 250], [350, 250],
+//     [150, 350], [250, 350], [350, 350]
+// ];
+
+// const lines = [
+//     [[50, 50], [450, 50]], [[50, 250], [450, 250]], [[50, 450], [450, 450]],
+//     [[50, 50], [50, 450]], [[250, 50], [250, 450]], [[450, 50], [450, 450]],
+//     [[100, 100], [400, 100]], [[100, 250], [400, 250]], [[100, 400], [400, 400]],
+//     [[100, 100], [100, 400]], [[250, 100], [250, 400]], [[400, 100], [400, 400]],
+//     [[150, 150], [350, 150]], [[150, 250], [350, 250]], [[150, 350], [350, 350]],
+//     [[150, 150], [150, 350]], [[250, 150], [250, 350]], [[350, 150], [350, 350]]
+// ];
+
+const positions = [
+    [40, 40], [260, 40], [480, 40],
+    [40, 260], [480, 260],
+    [40, 480], [260, 480], [480, 480],
+    [120, 120], [260, 120], [400, 120],
+    [120, 260], [400, 260],
+    [120, 400], [260, 400], [400, 400],
+    [180, 180], [260, 180], [340, 180],
+    [180, 260], [340, 260],
+    [180, 340], [260, 340], [340, 340]
+];
+
+const lines = [
+    [[40, 40], [480, 40]], [[40, 260], [480, 260]], [[40, 480], [480, 480]],
+    [[40, 40], [40, 480]], [[260, 40], [260, 480]], [[480, 40], [480, 480]],
+    [[120, 120], [400, 120]], [[120, 260], [400, 260]], [[120, 400], [400, 400]],
+    [[120, 120], [120, 400]], [[260, 120], [260, 400]], [[400, 120], [400, 400]],
+    [[180, 180], [340, 180]], [[180, 260], [340, 260]], [[180, 340], [340, 340]],
+    [[180, 180], [180, 340]], [[260, 180], [260, 340]], [[340, 180], [340, 340]]
+];
+
 
 const NineMensMorrisAI = () => {
     const [board, setBoard] = useState(Array(24).fill(null));
@@ -8,50 +52,28 @@ const NineMensMorrisAI = () => {
     const [userPieces, setUserPieces] = useState(9);
     const [aiPieces, setAiPieces] = useState(9);
     const [millFormed, setMillFormed] = useState(false);
-    const [aiMillFormed, setAiMillFormed] = useState(false);
     const [message, setMessage] = useState("");
 
-    const positions = [
-        [50, 50], [250, 50], [450, 50],
-        [50, 250], [250, 250], [450, 250],
-        [50, 450], [250, 450], [450, 450],
-        [100, 100], [250, 100], [400, 100],
-        [100, 250], [400, 250],
-        [100, 400], [250, 400], [400, 400],
-        [150, 150], [250, 150], [350, 150],
-        [150, 250], [350, 250],
-        [150, 350], [250, 350], [350, 350]
-    ];
-
-    const mills = [
-        [0, 1, 2], [3, 4, 5], [6, 7, 8],
-        [9, 10, 11], [12, 13, 14], [15, 16, 17],
-        [18, 19, 20], [21, 22, 23],
-        [0, 9, 17], [1, 10, 18], [2, 11, 19],
-        [3, 12, 20], [4, 13, 21], [5, 14, 22],
-        [6, 15, 23], [7, 16, 22], [8, 17, 23]
-    ];
-
     const checkMill = (newBoard, player) => {
-        return mills.some(mill => mill.every(index => newBoard[index] === player));
+        return [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],
+            [9, 10, 11], [12, 13, 14], [15, 16, 17],
+            [18, 19, 20], [21, 22, 23]
+        ].some(mill => mill.every(index => newBoard[index] === player));
     };
 
     const handleClick = (index) => {
-        if (millFormed || aiMillFormed) return;
-        if (phase === "placing") {
-            if (board[index] !== null || turn !== "user") return;
-            const newBoard = [...board];
-            newBoard[index] = "user";
-            setBoard(newBoard);
-            setUserPieces(userPieces - 1);
-            if (checkMill(newBoard, "user")) {
-                setMillFormed(true);
-                setMessage("You formed a mill! Remove an opponent's piece.");
-                return;
-            }
-            setTurn("ai");
-            if (userPieces - 1 === 0 && aiPieces === 0) setPhase("moving");
+        if (millFormed || board[index] !== null || turn !== "user") return;
+        const newBoard = [...board];
+        newBoard[index] = "user";
+        setBoard(newBoard);
+        setUserPieces(userPieces - 1);
+        if (checkMill(newBoard, "user")) {
+            setMillFormed(true);
+            setMessage("You formed a mill! Remove an AI piece.");
+            return;
         }
+        setTurn("ai");
     };
 
     const handleRemoveAiPiece = (index) => {
@@ -67,58 +89,66 @@ const NineMensMorrisAI = () => {
     };
 
     useEffect(() => {
-        if (turn === "ai" && !millFormed && !aiMillFormed) {
+        if (turn === "ai" && !millFormed) {
             setTimeout(() => {
                 const emptySpots = board.map((v, i) => v === null ? i : null).filter(v => v !== null);
-                if (phase === "placing" && emptySpots.length > 0) {
+                if (emptySpots.length > 0) {
                     const aiMove = emptySpots[Math.floor(Math.random() * emptySpots.length)];
                     const newBoard = [...board];
                     newBoard[aiMove] = "ai";
                     setBoard(newBoard);
                     setAiPieces(aiPieces - 1);
-                    if (checkMill(newBoard, "ai")) {
-                        setAiMillFormed(true);
-                        setMessage("AI formed a mill! AI will remove your piece.");
-                        setTimeout(() => {
-                            const userPiecesToRemove = board.map((v, i) => v === "user" ? i : null).filter(v => v !== null);
-                            if (userPiecesToRemove.length > 0) {
-                                const removeIndex = userPiecesToRemove[Math.floor(Math.random() * userPiecesToRemove.length)];
-                                newBoard[removeIndex] = null;
-                                setBoard(newBoard);
-                                setUserPieces(userPieces - 1);
-                                setAiMillFormed(false);
-                                setMessage("");
-                            }
-                        }, 1000);
-                        return;
-                    }
-                    if (userPieces === 0 && aiPieces - 1 === 0) setPhase("moving");
                 }
                 setTurn("user");
             }, 1000);
         }
-    }, [turn, board, userPieces, aiPieces]);
+    }, [turn, board]);
 
     return (
+        <div className="gamebb relative flex items-center justify-center min-h-screen bg-gray-900">
+            <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="absolute inset-0 w-full h-full object-cover"
+            >
+                <source src={sww} type="video/mp4" />
+            </video>
+        
         <div className="game-container">
-            <h2>Nine Men's Morris - Play with Computer</h2>
+            <h2>Nine Men's Morris - Play with AI</h2>
             <div>User Pieces: {userPieces} | AI Pieces: {aiPieces}</div>
             <div className="message">{message}</div>
             <svg width="500" height="500" className="game-board">
+                {/* Draw board lines */}
+                {lines.map(([start, end], index) => (
+                    <line
+                        key={index}
+                        x1={start[0]} y1={start[1]}
+                        x2={end[0]} y2={end[1]}
+                        stroke="white" strokeWidth="4"
+                    />
+                ))}
+
+                {/* Draw game pieces */}
                 {positions.map(([x, y], index) => (
                     <g key={index}>
                         <circle
                             cx={x} cy={y} r={15}
                             fill={board[index] === "user" ? "blue" : board[index] === "ai" ? "red" : "white"}
                             stroke="black" strokeWidth="2"
-                            onClick={() => 
-                                millFormed && board[index] === "ai" ? handleRemoveAiPiece(index) :
-                                handleClick(index)
+                            className="piece"
+                            onClick={() =>
+                                millFormed && board[index] === "ai"
+                                    ? handleRemoveAiPiece(index)
+                                    : handleClick(index)
                             }
                         />
                     </g>
                 ))}
             </svg>
+        </div>
         </div>
     );
 };

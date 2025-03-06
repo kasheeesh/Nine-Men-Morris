@@ -1,27 +1,29 @@
 .game-container {
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* background-color: #1e1e1e; */
+    color: white;
+    min-height: 100vh;
+    justify-content: center;
+    z-index: 1;
+    overflow: hidden;
+}
+.game-board {
+    /* background-color: #333; */
+    /* border: 4px solid #666; */
+    border-radius: 10px;
     margin-top: 20px;
 }
 
-.board {
-    display: grid;
-    grid-template-columns: repeat(6, 50px);
-    gap: 10px;
-    justify-content: center;
-}
-
-.cell {
-    width: 50px;
-    height: 50px;
-    background-color: lightgray;
-    border: 1px solid black;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.message {
+    margin-top: 10px;
     font-size: 18px;
-    cursor: pointer;
+    font-weight: bold;
+    color: yellow;
 }
 
-.cell:hover {
-    background-color: darkgray;
+.piece:hover {
+    cursor: pointer;
+    opacity: 0.8;
 }
