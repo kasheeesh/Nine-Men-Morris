@@ -1,53 +1,45 @@
-// import React from 'react'
-
-// const Logout = () => {
-//   return (
-//     <button className="start-btn signuppage">Logout</button>
-//   )
-// }
-// export default Logout;
-
-// import React from "react";
-// import { useNavigate } from "react-router-dom";
-
-// const Logout = () => {
-//   const navigate = useNavigate();
-
-//   const handleLogout = () => {
-//     // Clear authentication token
-//     localStorage.removeItem("token");
-
-//     // Redirect to login page
-//     navigate("/login");
-//   };
-
-//   return (
-//     <button className="start-btn signuppage" onClick={handleLogout}>
-//       Logout
-//     </button>
-//   );
-// };
-
-// export default Logout;
-
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
+// Create a custom event for logout that can be used by other components
+export const createLogoutEvent = () => {
+  const logoutEvent = new CustomEvent('userLogout');
+  window.dispatchEvent(logoutEvent);
+};
 
 const Logout = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [tokenDebug, setTokenDebug] = useState({
     localStorageToken: null,
-    tokenType: null
+    tokenType: null,
+    isExpired: false
   });
 
   // Debug effect to check token
   useEffect(() => {
     const token = localStorage.getItem("token");
+    let isExpired = false;
+    
+    if (token) {
+      try {
+        // Parse the token (assuming JWT format)
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const payload = JSON.parse(window.atob(base64));
+        
+        // Check if token is expired
+        isExpired = payload.exp < Date.now() / 1000;
+      } catch (error) {
+        console.error("Token parsing error:", error);
+        isExpired = true; // Assume expired if we can't parse it
+      }
+    }
+    
     setTokenDebug({
       localStorageToken: token,
-      tokenType: typeof token
+      tokenType: typeof token,
+      isExpired
     });
   }, []);
 
@@ -88,6 +80,9 @@ const Logout = () => {
         localStorage.removeItem("token");
         sessionStorage.removeItem("token");
         
+        // Fire logout event for other components
+        createLogoutEvent();
+        
         // Navigate away
         navigate("/login", { replace: true });
       } else {
@@ -100,6 +95,9 @@ const Logout = () => {
       // Force logout on any error
       localStorage.removeItem("token");
       sessionStorage.removeItem("token");
+      
+      // Fire logout event even on error
+      createLogoutEvent();
       
       // More aggressive redirect
       window.location.href = "/login";
@@ -114,6 +112,7 @@ const Logout = () => {
       {process.env.NODE_ENV === 'development' && (
         <div className="text-xs text-gray-500 mb-2">
           Token Debug: {tokenDebug.localStorageToken ? 'Present' : 'Missing'}
+          {tokenDebug.isExpired && ' (Expired)'}
         </div>
       )}
       

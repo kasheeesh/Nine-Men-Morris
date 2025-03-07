@@ -24,6 +24,7 @@ const DATABASE_NAME = "gameDB";
 const COLLECTION_NAME = "players";
 const LEADERBOARD_COLLECTION = "leaderboards";
 const LEXIQUEST_LEADERBOARD = "leaderboardlexi";
+const MINISWEEPER_LEADERBOARD = "leaderboardmini";
 const GAME_STATS_COLLECTION = "gameStats";
 
 let db;
@@ -92,7 +93,7 @@ app.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials." });
     }
 
-    const token = jwt.sign({ username: player.username }, SECRET_KEY, { expiresIn: "1h" });
+    const token = jwt.sign({ username: player.username }, SECRET_KEY, { expiresIn: "5m" });
 
     res.status(200).json({ message: "Login successful!", token });
   } catch (err) {
@@ -195,111 +196,23 @@ app.get("/leaderboardlexi", async (req, res) => {
   }
 });
 
+app.get("/leaderboardmini", async (req, res) => {
+  try {
+    // const today = new Date();
+    // today.setHours(0, 0, 0, 0); // Set to the start of the day
 
-// app.post("/handle-game-over", authenticateToken, async (req, res) => {
-//   try {
-//     const { score, gameName } = req.body;
-//     const username = req.user.username;
-    
-//     console.log(`Starting game over sequence for ${gameName}`);
-//     console.log("User:", username, "Score:", score);
-    
-//     if (!gameName || typeof score !== "number") {
-//       return res.status(400).json({ error: "Invalid input data." });
-//     }
-    
-//     // Determine the correct leaderboard collection
-//     let leaderboardCollection;
-//     if (gameName === "Space Shooter") {
-//       leaderboardCollection = "leaderboards";
-//     } else if (gameName === "LexiQuest") {
-//       leaderboardCollection = "leaderboardlexi";
-//     } else {
-//       return res.status(400).json({ error: "Invalid game name." });
-//     }
-    
-//     console.log("Using leaderboard collection:", leaderboardCollection);
-    
-//     // 1. STEP ONE: Update the leaderboard
-//     console.log("Step 1: Updating leaderboard...");
-//     const existingRecord = await db.collection(leaderboardCollection).findOne({ username });
-//     let highestScore = score;
-    
-//     if (existingRecord) {
-//       console.log("Found existing leaderboard record with score:", existingRecord.highestScore);
-//       if (score > existingRecord.highestScore) {
-//         console.log("New score is higher, updating leaderboard");
-//         await db.collection(leaderboardCollection).updateOne(
-//           { username },
-//           { $set: { highestScore: score } }
-//         );
-//       } else {
-//         console.log("Existing score is higher, keeping it");
-//         highestScore = existingRecord.highestScore;
-//       }
-//     } else {
-//       console.log("No existing record, creating new leaderboard entry");
-//       await db.collection(leaderboardCollection).insertOne({
-//         username,
-//         highestScore: score,
-//       });
-//     }
-    
-//     // Verify the leaderboard update
-//     const verifiedLeaderboard = await db.collection(leaderboardCollection).findOne({ username });
-//     console.log("Verified leaderboard entry:", JSON.stringify(verifiedLeaderboard));
-    
-//     // 2. STEP TWO: Update game stats with the VERIFIED leaderboard score
-//     console.log("Step 2: Updating game stats with verified score:", verifiedLeaderboard.highestScore);
-    
-//     const today = new Date().toISOString().split("T")[0]; // Format: YYYY-MM-DD
-//     const existingStats = await db.collection(GAME_STATS_COLLECTION).findOne({ username });
-    
-//     if (existingStats) {
-//       console.log("Updating existing game stats");
-//       await db.collection(GAME_STATS_COLLECTION).updateOne(
-//         { username },
-//         {
-//           $inc: { [`gamesPlayed.${gameName}`]: 1, totalGamesPlayed: 1 },
-//           $set: { 
-//             [`activityHistory.${today}`]: (existingStats.activityHistory?.[today] || 0) + 1,
-//             [`leaderboardScores.${gameName}`]: verifiedLeaderboard.highestScore
-//           }
-//         }
-//       );
-//     } else {
-//       console.log("Creating new game stats entry");
-//       await db.collection(GAME_STATS_COLLECTION).insertOne({
-//         username,
-//         gamesPlayed: { [gameName]: 1 },
-//         totalGamesPlayed: 1,
-//         leaderboardScores: { [gameName]: verifiedLeaderboard.highestScore },
-//         activityHistory: { [today]: 1 }
-//       });
-//     }
-    
-//     // 3. STEP THREE: Get the updated leaderboard if needed
-//     let leaderboard = null;
-//     if (gameName === "LexiQuest") { // Only fetch leaderboard for LexiQuest as it seems to need it immediately
-//       console.log("Fetching complete leaderboard for LexiQuest");
-//       leaderboard = await db.collection(leaderboardCollection)
-//         .find({})
-//         .sort({ highestScore: -1 })
-//         .toArray();
-//     }
-    
-//     // Return the results
-//     res.status(200).json({
-//       message: `${gameName} game over sequence completed successfully`,
-//       updatedScore: verifiedLeaderboard.highestScore,
-//       leaderboard: leaderboard // Will be null for Space Shooter
-//     });
-    
-//   } catch (err) {
-//     console.error(`Error in game over sequence:`, err);
-//     res.status(500).json({ error: "Internal server error." });
-//   }
-// });
+    const leaderboardmini = await db
+      .collection(MINISWEEPER_LEADERBOARD)
+      .find({}) // Fetch today's records only
+      .sort({ highestScore: -1 })
+      .toArray();
+
+    res.status(200).json(leaderboardmini);
+  } catch (err) {
+    res.status(500).json({ error: "Internal server error." });
+  }
+});
+
 
 app.post("/handle-game-over", authenticateToken, async (req, res) => {
   try {
