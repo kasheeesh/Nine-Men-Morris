@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useEffect } from "react"
 import { Lightbulb, AlertTriangle } from "lucide-react"
 import axios from "axios"
@@ -127,6 +126,8 @@ const MiniSweeper = () => {
   const [hintsLeft, setHintsLeft] = useState(3)
   const [hintType, setHintType] = useState<"safe" | "danger">("safe")
   const [score, setScore] = useState(0)
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [leaderboard, setLeaderboard] = useState<any[]>([]); // Store leaderboard data
   const remainingBlocks = countRemainingBlocks(board)
 
   const calculateScore = useCallback(() => {
@@ -148,16 +149,16 @@ const MiniSweeper = () => {
     return Math.round(calculatedScore)
   }, [board, time, difficulty])
 
-  useEffect(() => {
-    let timer: number
-    if (gameStatus === GameStatus.PLAYING && !firstClick) {
-      timer = window.setInterval(() => {
-        setTime((prev) => prev + 1)
-        setScore(calculateScore())
-      }, 1000)
-    }
-    return () => clearInterval(timer)
-  }, [gameStatus, firstClick, calculateScore])
+  // useEffect(() => {
+  //   let timer: number
+  //   if (gameStatus === GameStatus.PLAYING && !firstClick) {
+  //     timer = window.setInterval(() => {
+  //       setTime((prev) => prev + 1)
+  //       setScore(calculateScore())
+  //     }, 1000)
+  //   }
+  //   return () => clearInterval(timer)
+  // }, [gameStatus, firstClick, calculateScore])
 
   const useHint = useCallback(() => {
     if (hintsLeft <= 0 || gameStatus !== GameStatus.PLAYING) return
@@ -245,63 +246,125 @@ const MiniSweeper = () => {
     [board, gameStatus, firstClick, config]
   )
 
+  // const recordGamePlayed = useCallback(
+  //   async (finalScore?: number) => {
+  //     try {
+  //       console.log("Recording MiniSweeper game played...")
+
+  //       const token = localStorage.getItem("token")
+  //       if (!token) {
+  //         console.error("No authentication token available")
+  //         return
+  //       }
+
+  //       axios
+  //         .post(
+  //           "http://localhost:5000/handle-game-over",
+  //           {
+  //             gameName: "MiniSweeper",
+  //             score: finalScore || score,
+  //           },
+  //           {
+  //             headers: {
+  //               Authorization: `Bearer ${token}`,
+  //             },
+  //           }
+  //         )
+  //         .then((response) => {
+  //           console.log("Game recorded successfully:", response.data)
+  //         })
+  //         .catch((error) => {
+  //           console.error("Error recording game played:", error)
+  //         })
+  //     } catch (error) {
+  //       console.error("Error in recordGamePlayed function:", error)
+  //     }
+  //   },
+  //   [score]
+  // )
+
+  // Fetch leaderboard when button is clicked
   const recordGamePlayed = useCallback(
     async (finalScore?: number) => {
       try {
         console.log("Recording MiniSweeper game played...")
-
-        const token = localStorage.getItem("token")
-        if (!token) {
-          console.error("No authentication token available")
-          return
-        }
-
-        axios
-          .post(
-            "http://localhost:5000/handle-game-over",
-            {
-              gameName: "MiniSweeper",
-              score: finalScore || score,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          )
-          .then((response) => {
-            console.log("Game recorded successfully:", response.data)
-          })
-          .catch((error) => {
-            console.error("Error recording game played:", error)
-          })
+        
+        // Only log, don't make the API call here since it will be called from useEffect
+        console.log("Would record score:", finalScore || score)
       } catch (error) {
         console.error("Error in recordGamePlayed function:", error)
       }
     },
     [score]
   )
+  const handleLeaderboard = () => {
+    console.log("Coming here....");
+    axios.get('http://localhost:5000/leaderboardmini')
+      .then(response => {
+        console.log(response.data);
+        setLeaderboard(response.data);
+        setShowLeaderboard(true);
+      })
+      .catch(err => console.error('Error fetching leaderboard:', err));
+  };
 
+  // useEffect(() => {
+  //   let timer: number | undefined
+
+  //   if (gameStatus === GameStatus.PLAYING && !firstClick) {
+  //     timer = window.setInterval(() => {
+  //       setTime((prev) => prev + 1)
+  //       setScore(calculateScore())
+  //     }, 1000)
+  //   } else if ((gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST) && !firstClick) {
+  //     console.log(`Game ended with status: ${gameStatus}`)
+  //     const finalScore = calculateScore()
+  //     setScore(finalScore)
+  //     // recordGamePlayed(finalScore)
+  //   }
+
+  //   return () => {
+  //     if (timer) clearInterval(timer)
+  //   }
+  // }, [gameStatus, firstClick, recordGamePlayed, calculateScore])
+
+  // useEffect(() => {
+  //   if ((gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST) && !firstClick) {
+  //     recordGamePlayed(score)
+  //   }
+  // }, [gameStatus, firstClick, recordGamePlayed, score])
   useEffect(() => {
     let timer: number | undefined
-
+  
     if (gameStatus === GameStatus.PLAYING && !firstClick) {
-      timer = window.setInterval(() => {
-        setTime((prev) => prev + 1)
-        setScore(calculateScore())
-      }, 1000)
+      // Timer code...
     } else if ((gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST) && !firstClick) {
       console.log(`Game ended with status: ${gameStatus}`)
       const finalScore = calculateScore()
       setScore(finalScore)
-      recordGamePlayed(finalScore)
+      
+      // Make the API call here
+      const token = localStorage.getItem("token")
+      if (token) {
+        axios.post(
+          "http://localhost:5000/handle-game-over",
+          {
+            gameName: "MiniSweeper",
+            score: finalScore,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+      }
     }
-
+    
     return () => {
       if (timer) clearInterval(timer)
     }
-  }, [gameStatus, firstClick, recordGamePlayed, calculateScore])
-
+  }, [gameStatus, firstClick, calculateScore])
   const handleRightClick = useCallback(
     (row: number, col: number) => {
       if (gameStatus !== GameStatus.PLAYING || board[row][col].isRevealed) return
@@ -453,12 +516,37 @@ const MiniSweeper = () => {
                 </p>
                 <button
                   onClick={() => resetGame()}
-                  className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg shadow-md transition-all duration-200 hover:scale-105"
+                  className="px-4 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg shadow-md transition-all duration-200 hover:scale-105"
                 >
                   🔄 Restart Game
                 </button>
+                <button
+                  onClick={handleLeaderboard}
+                  className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg shadow-md transition-all duration-200 hover:scale-105"
+                >
+                  View Leaderboard
+                </button>
               </div>
             </div>
+          )}
+
+          {showLeaderboard && (
+    <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-75 flex items-center justify-center">
+      <div className="text-white text-center">
+        <h2 className="text-4xl font-bold mb-4">Leaderboard</h2>
+        <ul className="list-none">
+          {leaderboard.map((entry, index) => (
+            <li key={index} className="mb-2 text-lg">{`${index + 1}. ${entry.username} - ${entry.highestScore}`}</li>
+          ))}
+        </ul>
+        <button
+          className="bg-red-500 text-white px-4 py-2 rounded mt-4"
+          onClick={() => setShowLeaderboard(false)}
+        >
+          Close
+        </button>
+      </div>
+    </div>
           )}
         </div>
       </div>
