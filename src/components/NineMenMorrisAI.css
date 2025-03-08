@@ -3,12 +3,16 @@
     flex-direction: column;
     align-items: center;
     font-family: Arial, sans-serif;
+    color:white;
 }
 
 .score {
     margin-bottom: 20px;
     font-size: 18px;
+    color:white;
+    z-index: 1;
 }
+
 
 .game-board {
     position: relative;

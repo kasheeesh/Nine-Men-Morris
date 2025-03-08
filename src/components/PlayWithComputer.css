@@ -1,6 +1,12 @@
 .game-container {
     text-align: center;
     margin-top: 20px;
+    color:white;
+    z-index:1;
+}
+.score{
+    color:white;
+    z-index:100;
 }
 
 h2 {
