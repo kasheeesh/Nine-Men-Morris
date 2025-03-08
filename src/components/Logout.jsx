@@ -123,6 +123,7 @@ const Logout = () => {
           transition-all 
           duration-200 
           ease-in-out 
+          someex
           ${isLoading ? 'opacity-70 cursor-not-allowed' : 'hover:scale-105 active:scale-95'}
         `}
         onClick={handleLogout}
