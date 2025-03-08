@@ -23,11 +23,10 @@ const NineMensMorrisAI = () => {
         { id: 1, x: 250, y: 50 },  // Top-middle
         { id: 2, x: 450, y: 50 },  // Top-right corner
         { id: 3, x: 50, y: 250 },  // Middle-left
-        // { id: 4, x: 250, y: 250 }, // Center
-        { id: 5, x: 450, y: 250 }, // Middle-right
-        { id: 6, x: 50, y: 450 },  // Bottom-left corner
-        { id: 7, x: 250, y: 450 }, // Bottom-middle
-        { id: 8, x: 450, y: 450 }, // Bottom-right corner
+        // { id: 4, x: 450, y: 250 }, // Middle-right
+        { id: 5, x: 50, y: 450 },  // Bottom-left corner
+        { id: 6, x: 250, y: 450 }, // Bottom-middle
+        { id: 7, x: 450, y: 450 }, // Bottom-right corner
     
         // Middle square
         { id: 9, x: 150, y: 150 },  // Top-left corner
