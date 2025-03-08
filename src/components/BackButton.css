@@ -6,7 +6,7 @@
     margin: 0;
     overflow: hidden;
     outline: none;
-    background-color: black;
+    background-color: transparent;
     cursor: pointer;
     border: 0;
 }

@@ -1,27 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./NineMenMorrisAI.css";
 import sww from '../assets/sww.mp4';
-
-// const positions = [
-//     [50, 50], [250, 50], [450, 50],
-//     [50, 250], [450, 250],
-//     [50, 450], [250, 450], [450, 450],
-//     [100, 100], [250, 100], [400, 100],
-//     [100, 250], [400, 250],
-//     [100, 400], [250, 400], [400, 400],
-//     [150, 150], [250, 150], [350, 150],
-//     [150, 250], [350, 250],
-//     [150, 350], [250, 350], [350, 350]
-// ];
-
-// const lines = [
-//     [[50, 50], [450, 50]], [[50, 250], [450, 250]], [[50, 450], [450, 450]],
-//     [[50, 50], [50, 450]], [[250, 50], [250, 450]], [[450, 50], [450, 450]],
-//     [[100, 100], [400, 100]], [[100, 250], [400, 250]], [[100, 400], [400, 400]],
-//     [[100, 100], [100, 400]], [[250, 100], [250, 400]], [[400, 100], [400, 400]],
-//     [[150, 150], [350, 150]], [[150, 250], [350, 250]], [[150, 350], [350, 350]],
-//     [[150, 150], [150, 350]], [[250, 150], [250, 350]], [[350, 150], [350, 350]]
-// ];
+import ArrowButton from "./BackButton";
 
 const positions = [
     [40, 40], [260, 40], [480, 40],
@@ -105,7 +85,10 @@ const NineMensMorrisAI = () => {
     }, [turn, board]);
 
     return (
+
+        
         <div className="gamebb relative flex items-center justify-center min-h-screen bg-gray-900">
+            
             <video
                 autoPlay
                 loop
@@ -115,7 +98,7 @@ const NineMensMorrisAI = () => {
             >
                 <source src={sww} type="video/mp4" />
             </video>
-        
+        {/* <ArrowButton/> */}
         <div className="game-container">
             <h2>Nine Men's Morris - Play with AI</h2>
             <div>User Pieces: {userPieces} | AI Pieces: {aiPieces}</div>
