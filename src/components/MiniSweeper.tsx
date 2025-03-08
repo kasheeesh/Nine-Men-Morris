@@ -308,36 +308,14 @@ const MiniSweeper = () => {
       .catch(err => console.error('Error fetching leaderboard:', err));
   };
 
-  // useEffect(() => {
-  //   let timer: number | undefined
-
-  //   if (gameStatus === GameStatus.PLAYING && !firstClick) {
-  //     timer = window.setInterval(() => {
-  //       setTime((prev) => prev + 1)
-  //       setScore(calculateScore())
-  //     }, 1000)
-  //   } else if ((gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST) && !firstClick) {
-  //     console.log(`Game ended with status: ${gameStatus}`)
-  //     const finalScore = calculateScore()
-  //     setScore(finalScore)
-  //     // recordGamePlayed(finalScore)
-  //   }
-
-  //   return () => {
-  //     if (timer) clearInterval(timer)
-  //   }
-  // }, [gameStatus, firstClick, recordGamePlayed, calculateScore])
-
-  // useEffect(() => {
-  //   if ((gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST) && !firstClick) {
-  //     recordGamePlayed(score)
-  //   }
-  // }, [gameStatus, firstClick, recordGamePlayed, score])
   useEffect(() => {
     let timer: number | undefined
-  
+    
     if (gameStatus === GameStatus.PLAYING && !firstClick) {
-      // Timer code...
+      timer = window.setInterval(() => {
+        setTime((prev) => prev + 1)
+        setScore(calculateScore())
+      }, 1000)
     } else if ((gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST) && !firstClick) {
       console.log(`Game ended with status: ${gameStatus}`)
       const finalScore = calculateScore()
@@ -365,6 +343,40 @@ const MiniSweeper = () => {
       if (timer) clearInterval(timer)
     }
   }, [gameStatus, firstClick, calculateScore])
+
+  // useEffect(() => {
+  //   let timer: number | undefined
+  
+  //   if (gameStatus === GameStatus.PLAYING && !firstClick) {
+  //     // Timer code...
+  //   } else if ((gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST) && !firstClick) {
+  //     console.log(`Game ended with status: ${gameStatus}`)
+  //     const finalScore = calculateScore()
+  //     setScore(finalScore)
+      
+  //     // Make the API call here
+  //     const token = localStorage.getItem("token")
+  //     if (token) {
+  //       axios.post(
+  //         "http://localhost:5000/handle-game-over",
+  //         {
+  //           gameName: "MiniSweeper",
+  //           score: finalScore,
+  //         },
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${token}`,
+  //           },
+  //         }
+  //       )
+  //     }
+  //   }
+    
+  //   return () => {
+  //     if (timer) clearInterval(timer)
+  //   }
+  // }, [gameStatus, firstClick, calculateScore])
+
   const handleRightClick = useCallback(
     (row: number, col: number) => {
       if (gameStatus !== GameStatus.PLAYING || board[row][col].isRevealed) return
