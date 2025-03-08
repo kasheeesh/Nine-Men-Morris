@@ -1,73 +1,63 @@
 .game-container {
-    text-align: center;
-    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Arial, sans-serif;
+}
+
+.score {
+    margin-bottom: 20px;
+    font-size: 18px;
 }
 
 .game-board {
     position: relative;
-    width: 300px;
-    height: 300px;
-    margin: 20px auto;
-    background-color: #222;
-    border: 5px solid white;
-    display: flex;
-    flex-wrap: wrap;
+    width: 500px;
+    height: 500px;
+    border: 2px solid black;
 }
 
 .board-spot {
+    position: absolute;
     width: 30px;
     height: 30px;
-    position: absolute;
-    background-color: gray;
+    border: 2px solid black;
     border-radius: 50%;
-    border: 2px solid white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
+    background-color: white;
 }
 
-/* Positioning spots for traditional Nine Men's Morris */
-.board-spot:nth-child(1) { top: 0; left: 0; }
-.board-spot:nth-child(2) { top: 0; left: 50%; transform: translateX(-50%); }
-.board-spot:nth-child(3) { top: 0; right: 0; }
-.board-spot:nth-child(4) { top: 50px; left: 50px; }
-.board-spot:nth-child(5) { top: 50px; left: 50%; transform: translateX(-50%); }
-.board-spot:nth-child(6) { top: 50px; right: 50px; }
-.board-spot:nth-child(7) { top: 100px; left: 100px; }
-.board-spot:nth-child(8) { top: 100px; left: 50%; transform: translateX(-50%); }
-.board-spot:nth-child(9) { top: 100px; right: 100px; }
-
-.board-spot:nth-child(10) { bottom: 100px; left: 100px; }
-.board-spot:nth-child(11) { bottom: 100px; left: 50%; transform: translateX(-50%); }
-.board-spot:nth-child(12) { bottom: 100px; right: 100px; }
-.board-spot:nth-child(13) { bottom: 50px; left: 50px; }
-.board-spot:nth-child(14) { bottom: 50px; left: 50%; transform: translateX(-50%); }
-.board-spot:nth-child(15) { bottom: 50px; right: 50px; }
-.board-spot:nth-child(16) { bottom: 0; left: 0; }
-.board-spot:nth-child(17) { bottom: 0; left: 50%; transform: translateX(-50%); }
-.board-spot:nth-child(18) { bottom: 0; right: 0; }
-/* Add this to your NineMenMorrisAI.css file */
-.board-spot.removable {
-    border: 2px solid red; /* Highlight removable pieces */
-    cursor: pointer; /* Change cursor to indicate clickable */
-}
-/* Add this to your NineMenMorrisAI.css file */
-/* Add this to your NineMenMorrisAI.css file */
-.score {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #333;
-}
-
-.score div {
-    margin-bottom: 5px;
-}
-/* Player piece styles */
-.user {
+.board-spot.user {
     background-color: blue;
 }
 
-.ai {
+.board-spot.ai {
     background-color: red;
+}
+
+.board-spot.selected {
+    border: 2px solid yellow;
+}
+
+.board-spot.removable {
+    border: 2px dashed green;
+}
+.popup-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffcc00; /* Yellow background */
+    color: #000; /* Black text */
+    padding: 20px;
+    border: 2px solid #000; /* Black border */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
 }

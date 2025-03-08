@@ -16,7 +16,38 @@ const NineMensMorrisAI = () => {
     const [userMoves, setUserMoves] = useState(0); // Track user's moves
     const [aiMoves, setAiMoves] = useState(0); // Track AI's moves
     const [processedMills, setProcessedMills] = useState([]); // Track mills that have already been processed
-
+    const boardStructure = [
+        // Outer square
+        { id: 0, x: 50, y: 50 },   // Top-left corner
+        { id: 1, x: 250, y: 50 },  // Top-middle
+        { id: 2, x: 450, y: 50 },  // Top-right corner
+        { id: 3, x: 50, y: 250 },  // Middle-left
+        { id: 4, x: 250, y: 250 }, // Center
+        { id: 5, x: 450, y: 250 }, // Middle-right
+        { id: 6, x: 50, y: 450 },  // Bottom-left corner
+        { id: 7, x: 250, y: 450 }, // Bottom-middle
+        { id: 8, x: 450, y: 450 }, // Bottom-right corner
+    
+        // Middle square
+        { id: 9, x: 150, y: 150 },  // Top-left corner
+        { id: 10, x: 250, y: 150 }, // Top-middle
+        { id: 11, x: 350, y: 150 }, // Top-right corner
+        { id: 12, x: 150, y: 250 }, // Middle-left
+        { id: 13, x: 350, y: 250 }, // Middle-right
+        { id: 14, x: 150, y: 350 }, // Bottom-left corner
+        { id: 15, x: 250, y: 350 }, // Bottom-middle
+        { id: 16, x: 350, y: 350 }, // Bottom-right corner
+    
+        // Inner square
+        { id: 17, x: 200, y: 200 }, // Top-left corner
+        { id: 18, x: 250, y: 200 }, // Top-middle
+        { id: 19, x: 300, y: 200 }, // Top-right corner
+        { id: 20, x: 200, y: 250 }, // Middle-left
+        { id: 21, x: 300, y: 250 }, // Middle-right
+        { id: 22, x: 200, y: 300 }, // Bottom-left corner
+        { id: 23, x: 250, y: 300 }, // Bottom-middle
+        { id: 24, x: 300, y: 300 }, // Bottom-right corner
+    ];
     const mills = [
         [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
         [9, 10, 11], [12, 13, 14], [15, 16, 17], // Rows
@@ -58,24 +89,26 @@ const NineMensMorrisAI = () => {
         return false;
     };
 
+    // Check if a piece can be removed (not part of a mill unless all pieces are in mills)
     const canRemovePiece = (board, player) => {
         const opponent = player === "user" ? "ai" : "user";
         const opponentPieces = board.map((piece, index) => piece === opponent ? index : null).filter(v => v !== null);
-    
+
         // Check if all opponent pieces are in mills
         const allInMills = opponentPieces.every(index =>
             mills.some(mill => mill.includes(index) && mill.every(spot => board[spot] === opponent))
         );
-    
+
         if (allInMills) {
             return opponentPieces; // All pieces are in mills, so any can be removed
         }
-    
+
         // Otherwise, only pieces not in mills can be removed
         return opponentPieces.filter(index =>
-            !mills.some(mill => mill.includes(index) && mill.every(spot => board[spot] === opponent)
-        ));
+            !mills.some(mill => mill.includes(index) && mill.every(spot => board[spot] === opponent))
+        );
     };
+
     // Handle user clicks
     const handleClick = (index) => {
         if (isRemovePhase) {
@@ -169,7 +202,10 @@ const NineMensMorrisAI = () => {
 
                 if (aiPieces > 0) {
                     // Placement phase: AI is placing a piece
-                    const emptySpots = newBoard.map((v, i) => v === null ? i : null).filter(v => v !== null);
+                    const emptySpots = newBoard
+                        .map((v, i) => v === null ? i : null)
+                        .filter(v => v !== null);
+
                     if (emptySpots.length > 0) {
                         aiMove = emptySpots[Math.floor(Math.random() * emptySpots.length)];
                         newBoard[aiMove] = "ai";
@@ -185,10 +221,14 @@ const NineMensMorrisAI = () => {
                     }
                 } else {
                     // Movement phase: AI is moving a piece
-                    const aiPiecesOnBoard = newBoard.map((v, i) => v === "ai" ? i : null).filter(v => v !== null);
+                    const aiPiecesOnBoard = newBoard
+                        .map((v, i) => v === "ai" ? i : null)
+                        .filter(v => v !== null);
+
                     if (aiPiecesOnBoard.length > 0) {
                         const randomPiece = aiPiecesOnBoard[Math.floor(Math.random() * aiPiecesOnBoard.length)];
                         const adjacentEmptySpots = adjacentSpots[randomPiece].filter(index => newBoard[index] === null);
+
                         if (adjacentEmptySpots.length > 0) {
                             aiMove = adjacentEmptySpots[Math.floor(Math.random() * adjacentEmptySpots.length)];
                             newBoard[randomPiece] = null; // Remove the piece from the old spot
@@ -218,7 +258,7 @@ const NineMensMorrisAI = () => {
                 setTurn("user"); // Switch back to user's turn
             }, 1000); // Delay AI's move by 1 second for visibility
         }
-    }, [turn]);
+    }, [turn, board, aiPieces, aiMoves, millFlag, isRemovePhase]);
 
     // Check for winning condition
     useEffect(() => {
@@ -256,11 +296,12 @@ const NineMensMorrisAI = () => {
                 </div>
             )}
             <div className="game-board">
-                {board.map((piece, index) => (
+                {boardStructure.map((spot) => (
                     <div
-                        key={index}
-                        className={`board-spot ${piece} ${selectedPiece === index ? "selected" : ""} ${isRemovePhase && piece === "ai" ? "removable" : ""}`}
-                        onClick={() => handleClick(index)}
+                        key={spot.id}
+                        className={`board-spot ${board[spot.id]} ${selectedPiece === spot.id ? "selected" : ""} ${isRemovePhase && board[spot.id] === "ai" ? "removable" : ""}`}
+                        style={{ left: `${spot.x}px`, top: `${spot.y}px` }}
+                        onClick={() => handleClick(spot.id)}
                     ></div>
                 ))}
             </div>
