@@ -2,27 +2,6 @@ import React, { useState, useEffect } from "react";
 import "./NineMenMorrisAI.css";
 import sww from '../assets/sww.mp4';
 
-// const positions = [
-//     [50, 50], [250, 50], [450, 50],
-//     [50, 250], [450, 250],
-//     [50, 450], [250, 450], [450, 450],
-//     [100, 100], [250, 100], [400, 100],
-//     [100, 250], [400, 250],
-//     [100, 400], [250, 400], [400, 400],
-//     [150, 150], [250, 150], [350, 150],
-//     [150, 250], [350, 250],
-//     [150, 350], [250, 350], [350, 350]
-// ];
-
-// const lines = [
-//     [[50, 50], [450, 50]], [[50, 250], [450, 250]], [[50, 450], [450, 450]],
-//     [[50, 50], [50, 450]], [[250, 50], [250, 450]], [[450, 50], [450, 450]],
-//     [[100, 100], [400, 100]], [[100, 250], [400, 250]], [[100, 400], [400, 400]],
-//     [[100, 100], [100, 400]], [[250, 100], [250, 400]], [[400, 100], [400, 400]],
-//     [[150, 150], [350, 150]], [[150, 250], [350, 250]], [[150, 350], [350, 350]],
-//     [[150, 150], [150, 350]], [[250, 150], [250, 350]], [[350, 150], [350, 350]]
-// ];
-
 const positions = [
     [40, 40], [260, 40], [480, 40],
     [40, 260], [480, 260],
@@ -44,7 +23,6 @@ const lines = [
     [[180, 180], [180, 340]], [[260, 180], [260, 340]], [[340, 180], [340, 340]]
 ];
 
-
 const NineMensMorrisAI = () => {
     const [board, setBoard] = useState(Array(24).fill(null));
     const [turn, setTurn] = useState("user");
@@ -60,56 +38,98 @@ const NineMensMorrisAI = () => {
     const [userMoves, setUserMoves] = useState(0); // Track user's moves
     const [aiMoves, setAiMoves] = useState(0); // Track AI's moves
     const [processedMills, setProcessedMills] = useState([]); // Track mills that have already been processed
+    const [gameOver, setGameOver] = useState(false); // Track if the game is over
+
     const boardStructure = [
         // Outer square
         { id: 0, x: 50, y: 50 },   // Top-left corner
         { id: 1, x: 250, y: 50 },  // Top-middle
         { id: 2, x: 450, y: 50 },  // Top-right corner
         { id: 3, x: 50, y: 250 },  // Middle-left
-        { id: 4, x: 250, y: 250 }, // Center
-        { id: 5, x: 450, y: 250 }, // Middle-right
-        { id: 6, x: 50, y: 450 },  // Bottom-left corner
-        { id: 7, x: 250, y: 450 }, // Bottom-middle
-        { id: 8, x: 450, y: 450 }, // Bottom-right corner
+        { id: 4, x: 450, y: 250 }, // Middle-right
+        { id: 5, x: 50, y: 450 },  // Bottom-left corner
+        { id: 6, x: 250, y: 450 }, // Bottom-middle
+        { id: 7, x: 450, y: 450 }, // Bottom-right corner
     
         // Middle square
-        { id: 9, x: 150, y: 150 },  // Top-left corner
-        { id: 10, x: 250, y: 150 }, // Top-middle
-        { id: 11, x: 350, y: 150 }, // Top-right corner
-        { id: 12, x: 150, y: 250 }, // Middle-left
-        { id: 13, x: 350, y: 250 }, // Middle-right
-        { id: 14, x: 150, y: 350 }, // Bottom-left corner
-        { id: 15, x: 250, y: 350 }, // Bottom-middle
-        { id: 16, x: 350, y: 350 }, // Bottom-right corner
+        { id: 8, x: 150, y: 150 },  // Top-left corner
+        { id: 9, x: 250, y: 150 }, // Top-middle
+        { id: 10, x: 350, y: 150 }, // Top-right corner
+        { id: 11, x: 150, y: 250 }, // Middle-left
+        { id: 12, x: 350, y: 250 }, // Middle-right
+        { id: 13, x: 150, y: 350 }, // Bottom-left corner
+        { id: 14, x: 250, y: 350 }, // Bottom-middle
+        { id: 15, x: 350, y: 350 }, // Bottom-right corner
     
         // Inner square
-        { id: 17, x: 200, y: 200 }, // Top-left corner
-        { id: 18, x: 250, y: 200 }, // Top-middle
-        { id: 19, x: 300, y: 200 }, // Top-right corner
-        { id: 20, x: 200, y: 250 }, // Middle-left
-        { id: 21, x: 300, y: 250 }, // Middle-right
-        { id: 22, x: 200, y: 300 }, // Bottom-left corner
-        { id: 23, x: 250, y: 300 }, // Bottom-middle
-        { id: 24, x: 300, y: 300 }, // Bottom-right corner
-    ];
-    const mills = [
-        [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
-        [9, 10, 11], [12, 13, 14], [15, 16, 17], // Rows
-        [18, 19, 20], [21, 22, 23], // Rows
-        [0, 9, 21], [3, 10, 18], [6, 11, 15], // Columns
-        [1, 4, 7], [16, 19, 22], [8, 12, 17], // Columns
-        [5, 13, 20], [2, 14, 23] // Columns
+        { id: 16, x: 200, y: 200 }, // Top-left corner
+        { id: 17, x: 250, y: 200 }, // Top-middle
+        { id: 18, x: 300, y: 200 }, // Top-right corner
+        { id: 19, x: 200, y: 250 }, // Middle-left
+        { id: 20, x: 300, y: 250 }, // Middle-right
+        { id: 21, x: 200, y: 300 }, // Bottom-left corner
+        { id: 22, x: 250, y: 300 }, // Bottom-middle
+        { id: 23, x: 300, y: 300 }, // Bottom-right corner
     ];
 
+    // Updated mills array for 24 positions (no center)
+    const mills = [
+        // Outer square mills
+        [0, 1, 2], // Top row
+        [5, 6, 7], // Bottom row
+        [0, 3, 5], // Left column
+        [2, 4, 7], // Right column
+        [1,9,17],
+        [6,14,22],
+        // Middle square mills
+        [8, 9, 10], // Top row
+        [13, 14, 15], // Bottom row
+        [8, 11, 13], // Left column
+        [10, 12, 15], // Right column
+
+        // Inner square mills
+        [16, 17, 18], // Top row
+        [21, 22, 23], // Bottom row
+        [16, 19, 21], // Left column
+        [18, 20, 23], // Right column
+
+        // Diagonal mills (if applicable)
+        [0, 9, 18], // Outer to inner diagonal (top-left to bottom-right)
+        [2, 9, 16], // Outer to inner diagonal (top-right to bottom-left)
+        [5, 14, 23], // Outer to inner diagonal (bottom-left to top-right)
+        [7, 14, 21], // Outer to inner diagonal (bottom-right to top-left)
+
+        // Additional mills
+        [3, 9, 21], // Middle-left to top-middle to bottom-left
+        [4, 12, 20], // Middle-right to middle-right to middle-right
+    ];
+
+    // Updated adjacent spots for 24 positions (no center)
     const adjacentSpots = [
-        [1, 9], [0, 2, 4], [1, 14],
-        [4, 10], [1, 3, 5, 7], [4, 13],
-        [7, 11], [4, 6, 8], [7, 12],
-        [0, 10, 21], [3, 9, 11, 18], [6, 10, 15],
-        [8, 13, 17], [5, 12, 14, 20], [2, 13, 23],
-        [11, 16], [15, 17, 19], [12, 16],
-        [10, 19], [16, 18, 20, 22], [13, 19],
-        [9, 22], [19, 21, 23], [14, 22]
+        [1, 3],       // 0
+        [0, 2, 9],    // 1
+        [1, 4],       // 2
+        [0, 5, 11],   // 3
+        [2, 7, 12],   // 4
+        [3, 6],       // 5
+        [5, 7, 14],   // 6
+        [4, 6],       // 7
+        [9, 11],      // 8
+        [1, 8, 10, 17], // 9
+        [9, 12],      // 10
+        [3, 8, 13, 19], // 11
+        [4, 10, 15, 20], // 12
+        [11, 14],     // 13
+        [6, 13, 15, 22], // 14
+        [12, 14],     // 15
+        [17, 19],     // 16
+        [9, 16, 18, 22], // 17
+        [17, 20],     // 18
+        [11, 16, 21], // 19
+        [12, 18, 23], // 20
+        [19, 22],     // 21
+        [14, 17, 21, 23], // 22
+        [20, 22],     // 23
     ];
 
     // Check if a mill is formed
@@ -125,6 +145,7 @@ const NineMensMorrisAI = () => {
                     JSON.stringify(processedMill) === JSON.stringify(mill)
                 );
                 if (!isProcessed) {
+                    console.log(`New mill formed by ${player}:`, mill);
                     setProcessedMills(prev => [...prev, mill]); // Mark this mill as processed
                     return true;
                 }
@@ -155,6 +176,8 @@ const NineMensMorrisAI = () => {
 
     // Handle user clicks
     const handleClick = (index) => {
+        if (gameOver) return; // Stop the game if it's over
+
         if (isRemovePhase) {
             // Remove phase: User can remove an AI piece
             const removablePieces = canRemovePiece(board, "user");
@@ -238,6 +261,8 @@ const NineMensMorrisAI = () => {
 
     // AI's move logic
     useEffect(() => {
+        if (gameOver) return; // Stop the game if it's over
+
         if (turn === "ai" && !millFlag && !isRemovePhase && aiMoves < 30) {
             setTimeout(() => {
                 let newBoard = [...board];
@@ -302,26 +327,22 @@ const NineMensMorrisAI = () => {
                 setTurn("user"); // Switch back to user's turn
             }, 1000); // Delay AI's move by 1 second for visibility
         }
-    }, [turn, board, aiPieces, aiMoves, millFlag, isRemovePhase]);
+    }, [turn, board, aiPieces, aiMoves, millFlag, isRemovePhase, gameOver]);
 
-    // Check for winning condition
+    // Check for winning condition or move limit
     useEffect(() => {
-        const userPiecesOnBoard = board.filter(piece => piece === "user").length;
-        const aiPiecesOnBoard = board.filter(piece => piece === "ai").length;
-
-        // Check winning conditions only after all pieces are placed
-        if (userPieces === 0 && aiPieces === 0) {
-            if (userPiecesOnBoard <= 2) {
-                setMessage("AI Wins! Game Over.");
-                setShowMessage(true);
-                setAiScore(prev => prev + 20); // Add 20 points for AI winning
-            } else if (aiPiecesOnBoard <= 2) {
-                setMessage("You Win! Game Over.");
-                setShowMessage(true);
-                setUserScore(prev => prev + 20); // Add 20 points for user winning
+        if (userMoves + aiMoves >= 30) {
+            setGameOver(true);
+            if (userScore > aiScore) {
+                setMessage(`You Win! Final Score: User ${userScore} - AI ${aiScore}`);
+            } else if (aiScore > userScore) {
+                setMessage(`AI Wins! Final Score: User ${userScore} - AI ${aiScore}`);
+            } else {
+                setMessage(`It's a Draw! Final Score: User ${userScore} - AI ${aiScore}`);
             }
+            setShowMessage(true);
         }
-    }, [board, userPieces, aiPieces]);
+    }, [userMoves, aiMoves, userScore, aiScore]);
 
     return (
         <div className="gamebb relative flex items-center justify-center min-h-screen bg-gray-900">
@@ -335,30 +356,31 @@ const NineMensMorrisAI = () => {
                 <source src={sww} type="video/mp4" />
             </video>
         
-        <div className="game-container">
-            <h2>Nine Men's Morris - Play with Computer</h2>
-            <div className="score">
-                <div>User Score: {userScore}</div>
-                <div>AI Score: {aiScore}</div>
-                <div>User Pieces Left: {userPieces}/9</div>
-                <div>AI Pieces Left: {aiPieces}/9</div>
-                <div>User Moves: {userMoves}/30</div>
-                <div>AI Moves: {aiMoves}/30</div>
-            </div>
-            {showMessage && (
-                <div className="popup-message">
-                    {message}
+            <div className="game-container">
+                <h2>Nine Men's Morris - Play with Computer</h2>
+                <div className="score">
+                    <div>User Score: {userScore}</div>
+                    <div>AI Score: {aiScore}</div>
+                    <div>User Pieces Left: {userPieces}/9</div>
+                    <div>AI Pieces Left: {aiPieces}/9</div>
+                    <div>User Moves: {userMoves}/30</div>
+                    <div>AI Moves: {aiMoves}/30</div>
                 </div>
-            )}
-            <div className="game-board">
-                {boardStructure.map((spot) => (
-                    <div
-                        key={spot.id}
-                        className={`board-spot ${board[spot.id]} ${selectedPiece === spot.id ? "selected" : ""} ${isRemovePhase && board[spot.id] === "ai" ? "removable" : ""}`}
-                        style={{ left: `${spot.x}px`, top: `${spot.y}px` }}
-                        onClick={() => handleClick(spot.id)}
-                    ></div>
-                ))}
+                {showMessage && (
+                    <div className="popup-message">
+                        {message}
+                    </div>
+                )}
+                <div className="game-board">
+                    {boardStructure.map((spot) => (
+                        <div
+                            key={spot.id}
+                            className={`board-spot ${board[spot.id]} ${selectedPiece === spot.id ? "selected" : ""} ${isRemovePhase && board[spot.id] === "ai" ? "removable" : ""}`}
+                            style={{ left: `${spot.x}px`, top: `${spot.y}px` }}
+                            onClick={() => handleClick(spot.id)}
+                        ></div>
+                    ))}
+                </div>
             </div>
         </div>
     );
