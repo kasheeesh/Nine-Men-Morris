@@ -2,28 +2,62 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* background-color: #1e1e1e; */
-    color: white;
-    min-height: 100vh;
-    justify-content: center;
-    z-index: 1;
-    overflow: hidden;
-}
-.game-board {
-    /* background-color: #333; */
-    /* border: 4px solid #666; */
-    border-radius: 10px;
-    margin-top: 20px;
+    font-family: Arial, sans-serif;
 }
 
-.message {
-    margin-top: 10px;
+.score {
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+
+.game-board {
+    position: relative;
+    width: 500px;
+    height: 500px;
+    border: 2px solid black;
+}
+
+.board-spot {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border: 2px solid black;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background-color: white;
+}
+
+.board-spot.user {
+    background-color: blue;
+}
+
+.board-spot.ai {
+    background-color: red;
+}
+
+.board-spot.selected {
+    border: 2px solid yellow;
+}
+
+.board-spot.removable {
+    border: 2px dashed green;
+}
+.popup-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffcc00; /* Yellow background */
+    color: #000; /* Black text */
+    padding: 20px;
+    border: 2px solid #000; /* Black border */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
     font-size: 18px;
     font-weight: bold;
-    color: yellow;
-}
-
-.piece:hover {
-    cursor: pointer;
-    opacity: 0.8;
+    text-align: center;
 }
